@@ -2362,11 +2362,18 @@
                 'cancelled': '⏸️ Cancelled'
             };
 
-            // Demo data - would come from currentUser object
-            const tier = currentUser?.subscription_tier || 'free';
-            const status = currentUser?.subscription_status || 'active';
-            const paymentDate = currentUser?.payment_date || null;
-            const endDate = currentUser?.subscription_end_date || null;
+            // For now, all users show as Premium with calculated dates
+            const tier = 'premium';  // Override to premium for all users
+            const status = 'active';
+
+            // Calculate payment date: later of account creation or today
+            const accountCreated = currentUser?.created_at ? new Date(currentUser.created_at) : new Date();
+            const today = new Date();
+            const paymentDate = accountCreated > today ? accountCreated : today;
+
+            // Calculate expiration date: one year from payment date
+            const endDate = new Date(paymentDate);
+            endDate.setFullYear(endDate.getFullYear() + 1);
 
             // Update subscription display with safety checks
             const subscriptionTier = document.getElementById('subscription-tier');
@@ -2376,17 +2383,13 @@
 
             if (subscriptionTier) subscriptionTier.textContent = tierMap[tier] || tier;
             if (subscriptionStatus) subscriptionStatus.textContent = statusMap[status] || status;
-            if (paymentDateEl) paymentDateEl.textContent = paymentDate ? new Date(paymentDate).toLocaleDateString() : '--';
-            if (subscriptionEndDate) subscriptionEndDate.textContent = endDate ? new Date(endDate).toLocaleDateString() : '--';
+            if (paymentDateEl) paymentDateEl.textContent = paymentDate.toLocaleDateString();
+            if (subscriptionEndDate) subscriptionEndDate.textContent = endDate.toLocaleDateString();
 
             // Update button text based on tier with safety check
             const upgradeBtn = document.querySelector('button[onclick="showUpgradeOptions()"]');
             if (upgradeBtn) {
-                if (tier === 'free') {
-                    upgradeBtn.textContent = 'Upgrade Plan';
-                } else {
-                    upgradeBtn.textContent = 'Change Plan';
-                }
+                upgradeBtn.textContent = 'Change Plan';  // Since everyone is Premium now
             }
         }
 

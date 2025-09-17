@@ -155,14 +155,15 @@
                 <button id="register-tab" onclick="showRegister()" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-r-lg">Register</button>
             </div>
             <div id="login-form">
+                <form autocomplete="on">
                 <div class="grid md:grid-cols-2 gap-4 mb-4">
                     <div>
                         <label class="block text-sm font-medium mb-2">Email</label>
-                        <input type="email" id="login-email" class="input-field" placeholder="your@email.com">
+                        <input type="email" id="login-email" class="input-field" placeholder="your@email.com" autocomplete="username">
                     </div>
                     <div>
                         <label class="block text-sm font-medium mb-2">Password</label>
-                        <input type="password" id="login-password" class="input-field" placeholder="Password" onkeypress="handleLoginEnter(event)">
+                        <input type="password" id="login-password" class="input-field" placeholder="Password" autocomplete="current-password" onkeypress="handleLoginEnter(event)">
                     </div>
                 </div>
                 <div class="mb-4 space-y-2">
@@ -175,24 +176,27 @@
                         <span class="text-sm text-gray-600">Login as Administrator</span>
                     </label>
                 </div>
-                <button onclick="handleLogin()" class="btn-primary">🔐 Login</button>
+                <button onclick="handleLogin()" class="btn-primary" type="button">🔐 Login</button>
+                </form>
             </div>
             <div id="register-form" style="display: none;">
+                <form autocomplete="on">
                 <div class="grid md:grid-cols-3 gap-4 mb-4">
                     <div>
                         <label class="block text-sm font-medium mb-2">Full Name</label>
-                        <input type="text" id="register-name" class="input-field" placeholder="John Doe">
+                        <input type="text" id="register-name" class="input-field" placeholder="John Doe" autocomplete="name">
                     </div>
                     <div>
                         <label class="block text-sm font-medium mb-2">Email</label>
-                        <input type="email" id="register-email" class="input-field" placeholder="your@email.com">
+                        <input type="email" id="register-email" class="input-field" placeholder="your@email.com" autocomplete="username">
                     </div>
                     <div>
                         <label class="block text-sm font-medium mb-2">Password</label>
-                        <input type="password" id="register-password" class="input-field" placeholder="8+ chars, mixed case, number" onkeypress="handleRegisterEnter(event)">
+                        <input type="password" id="register-password" class="input-field" placeholder="8+ chars, mixed case, number" autocomplete="new-password" onkeypress="handleRegisterEnter(event)">
                     </div>
                 </div>
-                <button onclick="handleRegister()" class="btn-success">✨ Create Account</button>
+                <button onclick="handleRegister()" class="btn-success" type="button">✨ Create Account</button>
+                </form>
             </div>
             <div id="user-info" style="display: none;" class="bg-green-50 p-4 rounded-lg">
                 <div class="flex justify-between items-center">

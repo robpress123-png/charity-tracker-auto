@@ -1500,21 +1500,26 @@
 
         function showUserInfo() {
             if (currentUser) {
+                // Normalize user data from API response
+                const userName = currentUser.name || `${currentUser.firstName || ''} ${currentUser.lastName || ''}`.trim() || 'User';
+                const userLicense = currentUser.license_type || (currentUser.is_admin ? 'admin' : 'standard');
+                const donationLimit = currentUser.donation_limit || 'unlimited';
+
                 // Update auth section
-                document.getElementById('user-name').textContent = currentUser.name;
+                document.getElementById('user-name').textContent = userName;
                 document.getElementById('user-email').textContent = currentUser.email;
-                document.getElementById('user-license').textContent = `${currentUser.license_type.toUpperCase()} - ${currentUser.donation_limit} donations/month`;
+                document.getElementById('user-license').textContent = `${userLicense.toUpperCase()} - ${donationLimit} donations/month`;
 
                 document.getElementById('auth-section').querySelector('#login-form').style.display = 'none';
                 document.getElementById('auth-section').querySelector('#register-form').style.display = 'none';
                 document.getElementById('user-info').style.display = 'block';
 
                 // Update dashboard header
-                document.getElementById('dashboard-user-name').textContent = currentUser.name;
-                document.getElementById('dashboard-user-status').textContent = `${currentUser.license_type.toUpperCase()} Account - Ready to track donations`;
+                document.getElementById('dashboard-user-name').textContent = userName;
+                document.getElementById('dashboard-user-status').textContent = `${userLicense.toUpperCase()} Account - Ready to track donations`;
 
                 // Update navigation bar
-                document.getElementById('nav-user-name').textContent = currentUser.name;
+                document.getElementById('nav-user-name').textContent = userName;
                 document.getElementById('main-nav').style.display = 'block';
 
                 // Update profile page

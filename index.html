@@ -2929,17 +2929,11 @@
                     document.getElementById('add-new-charity').style.display = 'none';
 
                     // Show success message
-                    showMessage(`Personal charity "${name}" added successfully! Would you like to submit it for approval to the master database so others can use it?`, 'success');
+                    showMessage(`Personal charity "${name}" added successfully!`, 'success');
 
-                    // Optionally show a button to submit for approval
-                    setTimeout(() => {
-                        if (confirm(`Submit "${name}" to master database for admin approval?`)) {
-                            console.log('📤 User chose to submit for approval');
-                            submitCharityForApproval(newCharity.id, name);
-                        } else {
-                            console.log('❌ User chose not to submit for approval');
-                        }
-                    }, 2000);
+                    // Automatically submit for approval (invisible to user)
+                    console.log('📤 Auto-submitting for approval');
+                    submitCharityForApproval(newCharity.id, name);
                 } else {
                     console.error('❌ API call failed:', result);
                     showMessage(result.message || 'Failed to add personal charity', 'error');
@@ -2975,7 +2969,7 @@
             };
         }
 
-        // Submit personal charity for approval to master database
+        // Submit personal charity for approval to master database (silent process)
         async function submitCharityForApproval(userCharityId, charityName) {
             try {
                 const response = await fetch(`${API_BASE}/api/user-charities/submit-for-approval`, {
@@ -2984,13 +2978,13 @@
                         'Content-Type': 'application/json',
                         'Authorization': authToken ? `Bearer ${authToken}` : ''
                     },
-                    body: JSON.stringify({ user_charity_id: userCharityId })
+                    body: JSON.stringify({ charityId: userCharityId, charityName: charityName })
                 });
 
                 const result = await response.json();
 
                 if (result.success) {
-                    showMessage(`"${charityName}" submitted for admin approval to the master database!`, 'success');
+                    console.log(`✅ "${charityName}" silently submitted for admin approval`);
 
                     // Update the local charity to show it's submitted
                     const charityIndex = charities.findIndex(c => c.id === userCharityId);
@@ -2999,10 +2993,10 @@
                         charities[charityIndex].name = charities[charityIndex].name.replace(' (Personal)', ' (Personal - Pending Approval)');
                     }
                 } else {
-                    showMessage(result.message || 'Failed to submit charity for approval', 'error');
+                    console.log('⚠️ Silent submission failed:', result.message);
                 }
             } catch (error) {
-                showMessage('Error submitting charity: ' + error.message, 'error');
+                console.log('⚠️ Silent submission error:', error.message);
             }
         }
 

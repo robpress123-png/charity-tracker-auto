@@ -790,6 +790,34 @@
                 </div>
             </div>
 
+            <!-- Personal Charities Tool -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="text-lg font-bold text-gray-800 text-blue-600">🏠 Personal Charities</h3>
+                </div>
+                <div class="space-y-4">
+                    <p class="text-gray-600">View and manage your personal charity entries for diagnostic purposes.</p>
+
+                    <div class="grid gap-4">
+                        <div class="flex space-x-4">
+                            <button onclick="loadPersonalCharities()" class="btn-primary">
+                                🏠 Load Personal Charities
+                            </button>
+                            <button onclick="refreshCharityList()" class="btn-secondary">
+                                🔄 Refresh Charity List
+                            </button>
+                        </div>
+
+                        <div id="personal-charities-list" class="border rounded-lg p-4 max-h-96 overflow-y-auto">
+                            <div class="text-center text-gray-500 py-8">
+                                <div class="text-4xl mb-2">🏠</div>
+                                <p>Click "Load Personal Charities" to see your charity entries</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Future Tools Section -->
             <div class="card">
                 <div class="card-header">
@@ -2569,6 +2597,105 @@
                 console.error('Error deleting donations:', error);
                 showMessage('Error deleting donations: ' + error.message, 'error');
             }
+        }
+
+        // Personal Charities Listing Functions
+        async function loadPersonalCharities() {
+            if (!currentUser || !authToken) {
+                showMessage('Please login to view personal charities', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/api/user-charities`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+
+                const result = await response.json();
+                console.log('🏠 Personal charities response:', result);
+
+                if (result.success && result.data.charities) {
+                    const charities = result.data.charities;
+                    const listContainer = document.getElementById('personal-charities-list');
+
+                    if (charities.length === 0) {
+                        listContainer.innerHTML = `
+                            <div class="text-center text-gray-500 py-8">
+                                <div class="text-4xl mb-2">🏠</div>
+                                <p>No personal charities found</p>
+                                <p class="text-sm mt-2">Personal charities are charities you've added that are pending admin review</p>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    const charityItems = charities.map(charity => {
+                        const statusBadge = getStatusBadge(charity.review_status || 'pending');
+                        return `
+                            <div class="p-4 border border-gray-200 rounded-lg mb-3 hover:bg-gray-50">
+                                <div class="flex justify-between items-start mb-2">
+                                    <h4 class="font-semibold text-gray-800">${charity.name}</h4>
+                                    ${statusBadge}
+                                </div>
+                                <div class="grid grid-cols-2 gap-4 text-sm text-gray-600">
+                                    <div>
+                                        <span class="font-medium">EIN:</span> ${charity.ein || 'Not provided'}
+                                    </div>
+                                    <div>
+                                        <span class="font-medium">ID:</span> ${charity.id}
+                                    </div>
+                                    <div class="col-span-2">
+                                        <span class="font-medium">Address:</span>
+                                        ${charity.address || 'Not provided'}${charity.city ? ', ' + charity.city : ''}${charity.state ? ', ' + charity.state : ''}${charity.zip_code ? ' ' + charity.zip_code : ''}
+                                    </div>
+                                    <div>
+                                        <span class="font-medium">Created:</span> ${new Date(charity.created_at).toLocaleDateString()}
+                                    </div>
+                                    <div>
+                                        <span class="font-medium">Reviewed:</span> ${charity.reviewed_at ? new Date(charity.reviewed_at).toLocaleDateString() : 'Not yet'}
+                                    </div>
+                                </div>
+                                ${charity.review_notes ? `<div class="mt-2 p-2 bg-blue-50 rounded text-sm"><span class="font-medium">Review Notes:</span> ${charity.review_notes}</div>` : ''}
+                            </div>
+                        `;
+                    }).join('');
+
+                    listContainer.innerHTML = `
+                        <div class="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                            <span class="font-medium text-blue-800">Found ${charities.length} personal ${charities.length === 1 ? 'charity' : 'charities'}</span>
+                        </div>
+                        <div class="space-y-3">
+                            ${charityItems}
+                        </div>
+                    `;
+
+                } else {
+                    showMessage('Failed to load personal charities: ' + result.message, 'error');
+                }
+            } catch (error) {
+                console.error('Error loading personal charities:', error);
+                showMessage('Error loading personal charities: ' + error.message, 'error');
+            }
+        }
+
+        function getStatusBadge(status) {
+            const statusMap = {
+                'pending': { text: 'Pending Review', class: 'bg-yellow-100 text-yellow-800' },
+                'approved': { text: 'Approved', class: 'bg-green-100 text-green-800' },
+                'rejected': { text: 'Rejected', class: 'bg-red-100 text-red-800' },
+                'duplicate': { text: 'Duplicate', class: 'bg-gray-100 text-gray-800' }
+            };
+
+            const config = statusMap[status] || statusMap['pending'];
+            return `<span class="px-2 py-1 rounded text-xs font-medium ${config.class}">${config.text}</span>`;
+        }
+
+        function refreshCharityList() {
+            loadCharities(); // Refresh the main charity list
+            showMessage('Charity list refreshed', 'success');
         }
 
         function updateSubscriptionDisplay() {

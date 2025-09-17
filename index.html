@@ -510,23 +510,11 @@
                            placeholder="Optional description">
                 </div>
 
-                <button type="submit"
-                        style="background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-                               color: white;
-                               padding: 14px 28px;
-                               border: none;
-                               border-radius: 8px;
-                               font-weight: 600;
-                               font-size: 16px;
-                               cursor: pointer;
-                               width: 100%;
-                               box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-                               transition: all 0.2s ease;
-                               transform: translateY(0);"
-                        onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(59, 130, 246, 0.4)';"
-                        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(59, 130, 246, 0.3)';">
-                    ✅ Save Donation
-                </button>
+                <div class="flex justify-start">
+                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                        ✅ Save Donation
+                    </button>
+                </div>
             </form>
 
             <div id="donation-result" class="mt-4"></div>

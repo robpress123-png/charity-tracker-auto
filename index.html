@@ -502,7 +502,7 @@
                            placeholder="Optional description">
                 </div>
 
-                <button type="submit" class="btn-primary">Save Donation</button>
+                <button type="submit" class="btn-primary w-full">Save Donation</button>
             </form>
 
             <div id="donation-result" class="mt-4"></div>
@@ -1657,6 +1657,7 @@
                 const createBtn = donationSection.querySelector('button[onclick*="createDonation"]');
                 if (createBtn) {
                     createBtn.textContent = 'Save Donation';
+                    createBtn.className = 'btn-primary w-full';
                 }
             }
         }
@@ -2279,6 +2280,31 @@
 
                         // Update dashboard display with saved tax rate
                         updateDashboardTaxDisplay();
+
+                        // CRITICAL FIX: Update profile form fields if they exist
+                        setTimeout(() => {
+                            const filingStatusField = document.getElementById('filing-status');
+                            const incomeRangeField = document.getElementById('income-range');
+
+                            if (filingStatusField) {
+                                filingStatusField.value = currentUser.filingStatus || 'single';
+                                // Trigger the change event to update brackets
+                                if (typeof updateIncomeBrackets === 'function') {
+                                    updateIncomeBrackets();
+                                }
+                            }
+
+                            if (incomeRangeField && currentUser.incomeBracket) {
+                                incomeRangeField.value = currentUser.incomeBracket;
+                            }
+
+                            console.log('✅ Tax settings loaded and form updated:', {
+                                filing_status: currentUser.filingStatus,
+                                income_bracket: currentUser.incomeBracket,
+                                tax_rate: currentUser.taxRate
+                            });
+                        }, 100);
+
                         return;
                     }
                 }

@@ -502,7 +502,23 @@
                            placeholder="Optional description">
                 </div>
 
-                <button type="submit" class="btn-primary w-full">Save Donation</button>
+                <button type="submit"
+                        style="background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+                               color: white;
+                               padding: 14px 28px;
+                               border: none;
+                               border-radius: 8px;
+                               font-weight: 600;
+                               font-size: 16px;
+                               cursor: pointer;
+                               width: 100%;
+                               box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+                               transition: all 0.2s ease;
+                               transform: translateY(0);"
+                        onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(59, 130, 246, 0.4)';"
+                        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(59, 130, 246, 0.3)';">
+                    💾 Save Donation
+                </button>
             </form>
 
             <div id="donation-result" class="mt-4"></div>
@@ -1656,8 +1672,29 @@
                 // Update create donation button to use authenticated API
                 const createBtn = donationSection.querySelector('button[onclick*="createDonation"]');
                 if (createBtn) {
-                    createBtn.textContent = 'Save Donation';
-                    createBtn.className = 'btn-primary w-full';
+                    createBtn.innerHTML = '💾 Save Donation';
+                    createBtn.style.cssText = `
+                        background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+                        color: white;
+                        padding: 14px 28px;
+                        border: none;
+                        border-radius: 8px;
+                        font-weight: 600;
+                        font-size: 16px;
+                        cursor: pointer;
+                        width: 100%;
+                        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+                        transition: all 0.2s ease;
+                        transform: translateY(0);
+                    `;
+                    createBtn.onmouseover = function() {
+                        this.style.transform = 'translateY(-2px)';
+                        this.style.boxShadow = '0 6px 20px rgba(59, 130, 246, 0.4)';
+                    };
+                    createBtn.onmouseout = function() {
+                        this.style.transform = 'translateY(0)';
+                        this.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.3)';
+                    };
                 }
             }
         }
@@ -2131,7 +2168,7 @@
             }, 100);
         }
 
-        function updateProfile() {
+        async function updateProfile() {
             const name = document.getElementById('profile-name').value;
             const email = document.getElementById('profile-email').value;
 
@@ -2140,10 +2177,45 @@
                 return;
             }
 
-            if (currentUser) {
-                currentUser.name = name;
-                currentUser.email = email;
-                showMessage('Profile updated successfully!', 'success');
+            if (!currentUser || !authToken) {
+                showMessage('Not authenticated', 'error');
+                return;
+            }
+
+            try {
+                // Save to database
+                const response = await fetch(`${API_BASE}/api/users/profile`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify({
+                        name: name,
+                        email: email
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    // Update local user object with response data
+                    currentUser.name = result.data.user.name;
+                    currentUser.firstName = result.data.user.firstName;
+                    currentUser.lastName = result.data.user.lastName;
+                    currentUser.email = result.data.user.email;
+
+                    // Update user info display
+                    showUserInfo();
+
+                    showMessage('Profile updated successfully!', 'success');
+                    console.log('✅ Profile saved to database:', result.data.user);
+                } else {
+                    showMessage('Failed to save profile: ' + result.message, 'error');
+                }
+            } catch (error) {
+                console.error('Profile update error:', error);
+                showMessage('Error updating profile: ' + error.message, 'error');
             }
         }
 

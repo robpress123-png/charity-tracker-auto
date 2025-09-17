@@ -1563,7 +1563,7 @@
                 const profileName = document.getElementById('profile-name');
                 const profileEmail = document.getElementById('profile-email');
 
-                if (profileName) profileName.value = currentUser.name || userName;
+                if (profileName) profileName.value = currentUser.name || `${currentUser.firstName || ''} ${currentUser.lastName || ''}`.trim() || userName;
                 if (profileEmail) profileEmail.value = currentUser.email;
 
                 // Update subscription display

@@ -502,7 +502,7 @@
                            placeholder="Optional description">
                 </div>
 
-                <button type="submit" class="btn-primary">💾 Create Donation</button>
+                <button type="submit" class="btn-primary">Save Donation</button>
             </form>
 
             <div id="donation-result" class="mt-4"></div>
@@ -1656,7 +1656,7 @@
                 // Update create donation button to use authenticated API
                 const createBtn = donationSection.querySelector('button[onclick*="createDonation"]');
                 if (createBtn) {
-                    createBtn.textContent = '💾 Create Authenticated Donation';
+                    createBtn.textContent = 'Save Donation';
                 }
             }
         }

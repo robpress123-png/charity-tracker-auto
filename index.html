@@ -175,7 +175,7 @@
                         <span class="text-sm text-gray-600">Login as Administrator</span>
                     </label>
                 </div>
-                <button onclick="handleLogin()" class="btn-primary">Login</button>
+                <button onclick="handleLogin()" class="btn-primary">🔐 Login</button>
             </div>
             <div id="register-form" style="display: none;">
                 <div class="grid md:grid-cols-3 gap-4 mb-4">
@@ -192,7 +192,7 @@
                         <input type="password" id="register-password" class="input-field" placeholder="8+ chars, mixed case, number" onkeypress="handleRegisterEnter(event)">
                     </div>
                 </div>
-                <button onclick="handleRegister()" class="btn-success">Create Account</button>
+                <button onclick="handleRegister()" class="btn-success">✨ Create Account</button>
             </div>
             <div id="user-info" style="display: none;" class="bg-green-50 p-4 rounded-lg">
                 <div class="flex justify-between items-center">
@@ -517,7 +517,7 @@
                                transform: translateY(0);"
                         onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(59, 130, 246, 0.4)';"
                         onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(59, 130, 246, 0.3)';">
-                    💾 Save Donation
+                    ✅ Save Donation
                 </button>
             </form>
 
@@ -1695,7 +1695,7 @@
                 // Update create donation button to use authenticated API
                 const createBtn = donationSection.querySelector('button[onclick*="createDonation"]');
                 if (createBtn) {
-                    createBtn.innerHTML = '💾 Save Donation';
+                    createBtn.innerHTML = '✅ Save Donation';
                     createBtn.style.cssText = `
                         background: linear-gradient(135deg, #3b82f6, #8b5cf6);
                         color: white;

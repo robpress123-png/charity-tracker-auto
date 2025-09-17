@@ -3021,7 +3021,7 @@
             showMessage('PDF export functionality would integrate with jsPDF library for complete tax-ready documents', 'success');
         }
 
-        // Check backend version and display it
+        // Check backend version and sync frontend version displays
         async function checkBackendVersion() {
             try {
                 const response = await fetch(`${API_BASE}/version`);
@@ -3031,11 +3031,33 @@
                     document.getElementById('backend-version').textContent = backendVersionText;
                     console.log(`🖥️ Backend Version: ${backendVersionText}`);
 
-                    // Check if versions match
-                    if (backendInfo.version !== FRONTEND_VERSION) {
-                        console.warn(`⚠️ Version mismatch! Frontend: ${FRONTEND_VERSION}, Backend: ${backendInfo.version}`);
-                        document.getElementById('backend-version').innerHTML = `<span class="text-red-300">${backendVersionText} ⚠️</span>`;
+                    // Sync frontend version displays with backend version
+                    const frontendVersion = backendInfo.version;
+                    document.getElementById('frontend-version').textContent = frontendVersion;
+
+                    // Update other version displays
+                    const allSpans = document.querySelectorAll('span');
+                    allSpans.forEach(el => {
+                        if (el.textContent.includes('v2.1.2')) {
+                            el.textContent = el.textContent.replace(/v2\.1\.2/g, frontendVersion);
+                        }
+                    });
+
+                    // Update paragraph text that contains version
+                    const allPs = document.querySelectorAll('p');
+                    allPs.forEach(el => {
+                        if (el.textContent.includes('v2.1.2')) {
+                            el.innerHTML = el.innerHTML.replace(/v2\.1\.2/g, frontendVersion);
+                        }
+                    });
+
+                    // Update app version if it exists
+                    const appVersionEl = document.getElementById('app-version');
+                    if (appVersionEl) {
+                        appVersionEl.textContent = frontendVersion;
                     }
+
+                    console.log(`🏠 Frontend Version synced to: ${frontendVersion}`);
                 } else {
                     console.warn('⚠️ Could not fetch backend version');
                     document.getElementById('backend-version').textContent = 'API unavailable';

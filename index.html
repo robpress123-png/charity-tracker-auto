@@ -1162,7 +1162,11 @@
                     body: JSON.stringify(formData)
                 });
 
+                console.log('🔍 DEBUG: Response status:', response.status);
+                console.log('🔍 DEBUG: Response headers:', Object.fromEntries(response.headers.entries()));
+
                 const result = await response.json();
+                console.log('🔍 DEBUG: Response result:', result);
 
                 if (result.success) {
                     showMessage('Donation created successfully! Saved to D1 database.', 'success');
@@ -1172,6 +1176,7 @@
                     loadUserDonations(); // Refresh the donation list
                     loadDashboardStats(); // Refresh dashboard stats
                 } else {
+                    console.error('❌ DEBUG: Donation failed:', result);
                     showMessage(result.message || 'Failed to create donation', 'error');
                 }
 

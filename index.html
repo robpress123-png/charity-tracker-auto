@@ -359,6 +359,14 @@
                                 <div class="text-sm opacity-90">Account settings</div>
                             </div>
                         </button>
+
+                        <button onclick="showTools()" class="flex items-center justify-center p-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
+                            <span class="text-2xl mr-3">🔧</span>
+                            <div class="text-left">
+                                <div class="font-semibold">Tools</div>
+                                <div class="text-sm opacity-90">Manage data</div>
+                            </div>
+                        </button>
                     </div>
                 </div>
 
@@ -747,6 +755,71 @@
             </div>
         </div>
 
+        <!-- Tools Page -->
+        <div id="tools-page" class="space-y-6">
+            <!-- Page Header -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="section-title">🔧 Tools & Data Management</h2>
+                    <span class="status-badge status-verified">Admin Tools</span>
+                </div>
+                <p class="section-subtitle">Manage your donation data and perform maintenance tasks</p>
+            </div>
+
+            <!-- Delete Donations Tool -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="text-lg font-bold text-gray-800 text-red-600">🗑️ Delete Donations</h3>
+                </div>
+                <div class="space-y-4">
+                    <p class="text-gray-600">Select donations to permanently delete from your records. This action cannot be undone.</p>
+
+                    <div class="grid gap-4">
+                        <div class="flex space-x-4">
+                            <button onclick="loadDeletableDonations()" class="btn-primary">
+                                📋 Load All Donations
+                            </button>
+                            <button onclick="deleteSelectedDonations()" class="btn-danger" id="delete-selected-btn" disabled>
+                                🗑️ Delete Selected
+                            </button>
+                        </div>
+
+                        <div id="deletable-donations-list" class="border rounded-lg p-4 max-h-96 overflow-y-auto">
+                            <div class="text-center text-gray-500 py-8">
+                                <div class="text-4xl mb-2">📋</div>
+                                <p>Click "Load All Donations" to see your donation history</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Future Tools Section -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="text-lg font-bold text-gray-800">🚀 Coming Soon</h3>
+                </div>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="p-4 bg-gray-50 rounded-lg">
+                        <h4 class="font-semibold mb-2">📊 Data Export</h4>
+                        <p class="text-sm text-gray-600">Export all your data in various formats</p>
+                    </div>
+                    <div class="p-4 bg-gray-50 rounded-lg">
+                        <h4 class="font-semibold mb-2">🔄 Data Import</h4>
+                        <p class="text-sm text-gray-600">Import donations from other platforms</p>
+                    </div>
+                    <div class="p-4 bg-gray-50 rounded-lg">
+                        <h4 class="font-semibold mb-2">🧹 Data Cleanup</h4>
+                        <p class="text-sm text-gray-600">Find and fix duplicate entries</p>
+                    </div>
+                    <div class="p-4 bg-gray-50 rounded-lg">
+                        <h4 class="font-semibold mb-2">📈 Analytics</h4>
+                        <p class="text-sm text-gray-600">Advanced donation analytics and insights</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Admin Panel (hidden by default) -->
         <div id="admin-section" class="card" style="display: none;">
             <div class="card-header">
@@ -798,8 +871,8 @@
 
     <script>
         // Version Information
-        const FRONTEND_VERSION = 'v2.2.0';
-        const FRONTEND_BUILD = '2025.09.17-SUBSCRIPTION-FIX';
+        const FRONTEND_VERSION = 'v2.2.1';
+        const FRONTEND_BUILD = '2025.09.17-TOOLS-SECTION';
 
         const API_BASE = 'https://charity-tracker-api.robpress123.workers.dev';
 
@@ -2086,7 +2159,7 @@
         function hideAllPages() {
             const elements = [
                 'dashboard', 'add-donation-page', 'donation-form-page',
-                'auth-section', 'reports-page', 'profile-page'
+                'auth-section', 'reports-page', 'profile-page', 'tools-page'
             ];
 
             elements.forEach(id => {
@@ -2344,6 +2417,148 @@
             } catch (error) {
                 console.error('Password change error:', error);
                 showMessage('Error changing password: ' + error.message, 'error');
+            }
+        }
+
+        // Tools Page Functions
+        function showTools() {
+            hideAllPages();
+            document.getElementById('tools-page').style.display = 'block';
+        }
+
+        async function loadDeletableDonations() {
+            if (!currentUser || !authToken) {
+                showMessage('Please login to manage donations', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/api/donations`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+
+                const result = await response.json();
+
+                if (result.success && result.data.donations) {
+                    const donations = result.data.donations;
+                    const listContainer = document.getElementById('deletable-donations-list');
+
+                    if (donations.length === 0) {
+                        listContainer.innerHTML = `
+                            <div class="text-center text-gray-500 py-8">
+                                <div class="text-4xl mb-2">📭</div>
+                                <p>No donations found</p>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    const donationItems = donations.map(donation => `
+                        <div class="flex items-center p-3 border border-gray-200 rounded-lg mb-2 hover:bg-gray-50">
+                            <input type="checkbox" class="donation-checkbox mr-3" data-donation-id="${donation.id}" onchange="updateDeleteButton()">
+                            <div class="flex-1 grid grid-cols-4 gap-4 text-sm">
+                                <div>
+                                    <span class="font-medium">${donation.date}</span>
+                                </div>
+                                <div>
+                                    <span class="text-gray-700">${donation.charity_name}</span>
+                                </div>
+                                <div>
+                                    <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs">${donation.type}</span>
+                                </div>
+                                <div class="text-right">
+                                    <span class="font-medium text-green-600">$${donation.tax_deductible_amount.toFixed(2)}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+
+                    listContainer.innerHTML = `
+                        <div class="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                            <div class="flex items-center justify-between">
+                                <span class="font-medium text-blue-800">Found ${donations.length} donations</span>
+                                <div class="space-x-2">
+                                    <button onclick="selectAllDonations()" class="text-sm px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700">Select All</button>
+                                    <button onclick="clearAllSelections()" class="text-sm px-3 py-1 bg-gray-600 text-white rounded hover:bg-gray-700">Clear All</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            ${donationItems}
+                        </div>
+                    `;
+
+                    updateDeleteButton();
+                } else {
+                    showMessage('Failed to load donations: ' + result.message, 'error');
+                }
+            } catch (error) {
+                console.error('Error loading donations:', error);
+                showMessage('Error loading donations: ' + error.message, 'error');
+            }
+        }
+
+        function updateDeleteButton() {
+            const checkboxes = document.querySelectorAll('.donation-checkbox:checked');
+            const deleteBtn = document.getElementById('delete-selected-btn');
+            deleteBtn.disabled = checkboxes.length === 0;
+            deleteBtn.textContent = checkboxes.length > 0 ? `🗑️ Delete Selected (${checkboxes.length})` : '🗑️ Delete Selected';
+        }
+
+        function selectAllDonations() {
+            const checkboxes = document.querySelectorAll('.donation-checkbox');
+            checkboxes.forEach(cb => cb.checked = true);
+            updateDeleteButton();
+        }
+
+        function clearAllSelections() {
+            const checkboxes = document.querySelectorAll('.donation-checkbox');
+            checkboxes.forEach(cb => cb.checked = false);
+            updateDeleteButton();
+        }
+
+        async function deleteSelectedDonations() {
+            const checkboxes = document.querySelectorAll('.donation-checkbox:checked');
+            const donationIds = Array.from(checkboxes).map(cb => cb.getAttribute('data-donation-id'));
+
+            if (donationIds.length === 0) {
+                showMessage('No donations selected', 'warning');
+                return;
+            }
+
+            const confirmed = confirm(`Are you sure you want to permanently delete ${donationIds.length} donation(s)? This action cannot be undone.`);
+            if (!confirmed) return;
+
+            try {
+                const deletePromises = donationIds.map(id =>
+                    fetch(`${API_BASE}/api/donations/${id}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Authorization': `Bearer ${authToken}`
+                        }
+                    })
+                );
+
+                const responses = await Promise.all(deletePromises);
+                const results = await Promise.all(responses.map(r => r.json()));
+
+                const successCount = results.filter(r => r.success).length;
+                const failCount = results.length - successCount;
+
+                if (successCount > 0) {
+                    showMessage(`Successfully deleted ${successCount} donation(s)${failCount > 0 ? `, ${failCount} failed` : ''}`, successCount === results.length ? 'success' : 'warning');
+                    loadDeletableDonations(); // Reload the list
+                    loadDashboardStats(); // Update dashboard
+                    loadUserDonations(); // Update main donation list
+                } else {
+                    showMessage('Failed to delete donations', 'error');
+                }
+            } catch (error) {
+                console.error('Error deleting donations:', error);
+                showMessage('Error deleting donations: ' + error.message, 'error');
             }
         }
 

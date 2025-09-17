@@ -1152,6 +1152,14 @@
                     headers['Authorization'] = `Bearer ${authToken}`;
                 }
 
+                console.log('🔍 DEBUG: Sending donation data:', formData);
+                console.log('🔍 DEBUG: Charity select value:', charitySelect.value);
+                console.log('🔍 DEBUG: Charity select data attributes:', {
+                    name: charitySelect.getAttribute('data-charity-name'),
+                    address: charitySelect.getAttribute('data-charity-address'),
+                    ein: charitySelect.getAttribute('data-charity-ein')
+                });
+
                 const response = await fetch(`${API_BASE}/api/donations`, {
                     method: 'POST',
                     headers: headers,

@@ -1521,26 +1521,46 @@
                 const userLicense = currentUser.license_type || (currentUser.is_admin ? 'admin' : 'standard');
                 const donationLimit = currentUser.donation_limit || 'unlimited';
 
-                // Update auth section
-                document.getElementById('user-name').textContent = userName;
-                document.getElementById('user-email').textContent = currentUser.email;
-                document.getElementById('user-license').textContent = `${userLicense.toUpperCase()} - ${donationLimit} donations/month`;
+                // Update auth section with safety checks
+                const userNameEl = document.getElementById('user-name');
+                const userEmailEl = document.getElementById('user-email');
+                const userLicenseEl = document.getElementById('user-license');
 
-                document.getElementById('auth-section').querySelector('#login-form').style.display = 'none';
-                document.getElementById('auth-section').querySelector('#register-form').style.display = 'none';
-                document.getElementById('user-info').style.display = 'block';
+                if (userNameEl) userNameEl.textContent = userName;
+                if (userEmailEl) userEmailEl.textContent = currentUser.email;
+                if (userLicenseEl) userLicenseEl.textContent = `${userLicense.toUpperCase()} - ${donationLimit} donations/month`;
 
-                // Update dashboard header
-                document.getElementById('dashboard-user-name').textContent = userName;
-                document.getElementById('dashboard-user-status').textContent = `${userLicense.toUpperCase()} Account - Ready to track donations`;
+                const authSection = document.getElementById('auth-section');
+                const userInfo = document.getElementById('user-info');
 
-                // Update navigation bar
-                document.getElementById('nav-user-name').textContent = userName;
-                document.getElementById('main-nav').style.display = 'block';
+                if (authSection) {
+                    const loginForm = authSection.querySelector('#login-form');
+                    const registerForm = authSection.querySelector('#register-form');
+                    if (loginForm) loginForm.style.display = 'none';
+                    if (registerForm) registerForm.style.display = 'none';
+                }
+                if (userInfo) userInfo.style.display = 'block';
 
-                // Update profile page
-                document.getElementById('profile-name').value = currentUser.name;
-                document.getElementById('profile-email').value = currentUser.email;
+                // Update dashboard header with safety checks
+                const dashboardUserName = document.getElementById('dashboard-user-name');
+                const dashboardUserStatus = document.getElementById('dashboard-user-status');
+
+                if (dashboardUserName) dashboardUserName.textContent = userName;
+                if (dashboardUserStatus) dashboardUserStatus.textContent = `${userLicense.toUpperCase()} Account - Ready to track donations`;
+
+                // Update navigation bar with safety checks
+                const navUserName = document.getElementById('nav-user-name');
+                const mainNav = document.getElementById('main-nav');
+
+                if (navUserName) navUserName.textContent = userName;
+                if (mainNav) mainNav.style.display = 'block';
+
+                // Update profile page with safety checks
+                const profileName = document.getElementById('profile-name');
+                const profileEmail = document.getElementById('profile-email');
+
+                if (profileName) profileName.value = currentUser.name || userName;
+                if (profileEmail) profileEmail.value = currentUser.email;
 
                 // Update subscription display
                 updateSubscriptionDisplay();
@@ -2344,17 +2364,25 @@
             const paymentDate = currentUser?.payment_date || null;
             const endDate = currentUser?.subscription_end_date || null;
 
-            document.getElementById('subscription-tier').textContent = tierMap[tier] || tier;
-            document.getElementById('subscription-status').textContent = statusMap[status] || status;
-            document.getElementById('payment-date').textContent = paymentDate ? new Date(paymentDate).toLocaleDateString() : '--';
-            document.getElementById('subscription-end-date').textContent = endDate ? new Date(endDate).toLocaleDateString() : '--';
+            // Update subscription display with safety checks
+            const subscriptionTier = document.getElementById('subscription-tier');
+            const subscriptionStatus = document.getElementById('subscription-status');
+            const paymentDateEl = document.getElementById('payment-date');
+            const subscriptionEndDate = document.getElementById('subscription-end-date');
 
-            // Update button text based on tier
+            if (subscriptionTier) subscriptionTier.textContent = tierMap[tier] || tier;
+            if (subscriptionStatus) subscriptionStatus.textContent = statusMap[status] || status;
+            if (paymentDateEl) paymentDateEl.textContent = paymentDate ? new Date(paymentDate).toLocaleDateString() : '--';
+            if (subscriptionEndDate) subscriptionEndDate.textContent = endDate ? new Date(endDate).toLocaleDateString() : '--';
+
+            // Update button text based on tier with safety check
             const upgradeBtn = document.querySelector('button[onclick="showUpgradeOptions()"]');
-            if (tier === 'free') {
-                upgradeBtn.textContent = 'Upgrade Plan';
-            } else {
-                upgradeBtn.textContent = 'Change Plan';
+            if (upgradeBtn) {
+                if (tier === 'free') {
+                    upgradeBtn.textContent = 'Upgrade Plan';
+                } else {
+                    upgradeBtn.textContent = 'Change Plan';
+                }
             }
         }
 

@@ -479,14 +479,35 @@
                         </div>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium mb-2">Donation Type</label>
-                        <select id="donation-type" class="input-field" required>
-                            <option value="money">💵 Money</option>
-                            <option value="items">📦 Items</option>
-                            <option value="mileage">🚗 Mileage</option>
-                            <option value="stock">📈 Stock</option>
-                            <option value="crypto">₿ Crypto</option>
-                        </select>
+                        <label class="block text-sm font-medium mb-2">Choose Donation Type</label>
+                        <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
+                            <button type="button" onclick="showItemsDonationPage()" class="donation-type-card p-4 border border-gray-300 rounded-lg text-center hover:border-blue-500 hover:bg-blue-50 transition-all duration-200">
+                                <div class="text-2xl mb-2">📦</div>
+                                <div class="text-sm font-medium">Items</div>
+                                <div class="text-xs text-gray-500">Multi-item support</div>
+                            </button>
+                            <button type="button" onclick="selectDonationType('money')" class="donation-type-card p-4 border border-gray-300 rounded-lg text-center hover:border-green-500 hover:bg-green-50 transition-all duration-200">
+                                <div class="text-2xl mb-2">💵</div>
+                                <div class="text-sm font-medium">Money</div>
+                                <div class="text-xs text-gray-500">Cash/Check</div>
+                            </button>
+                            <button type="button" onclick="selectDonationType('mileage')" class="donation-type-card p-4 border border-gray-300 rounded-lg text-center hover:border-orange-500 hover:bg-orange-50 transition-all duration-200">
+                                <div class="text-2xl mb-2">🚗</div>
+                                <div class="text-sm font-medium">Mileage</div>
+                                <div class="text-xs text-gray-500">14¢/mile</div>
+                            </button>
+                            <button type="button" onclick="selectDonationType('stock')" class="donation-type-card p-4 border border-gray-300 rounded-lg text-center hover:border-purple-500 hover:bg-purple-50 transition-all duration-200">
+                                <div class="text-2xl mb-2">📈</div>
+                                <div class="text-sm font-medium">Stock</div>
+                                <div class="text-xs text-gray-500">Securities</div>
+                            </button>
+                            <button type="button" onclick="selectDonationType('crypto')" class="donation-type-card p-4 border border-gray-300 rounded-lg text-center hover:border-yellow-500 hover:bg-yellow-50 transition-all duration-200">
+                                <div class="text-2xl mb-2">₿</div>
+                                <div class="text-sm font-medium">Crypto</div>
+                                <div class="text-xs text-gray-500">Digital assets</div>
+                            </button>
+                        </div>
+                        <input type="hidden" id="donation-type" required>
                     </div>
                 </div>
 
@@ -879,6 +900,149 @@
             </div>
         </div>
 
+        <!-- Items Donation Page -->
+        <div id="items-donation-page" class="space-y-6" style="display: none;">
+            <div class="card">
+                <div class="card-header">
+                    <div class="flex items-center">
+                        <button onclick="showAddDonation()" class="text-blue-600 hover:text-blue-800 mr-4">
+                            ← Back to Donation Types
+                        </button>
+                        <h2 class="section-title">📦 Items Donation</h2>
+                    </div>
+                    <div class="flex space-x-2">
+                        <span class="status-badge status-verified">✅ Multi-Item Support</span>
+                        <span class="status-badge status-verified">💰 Auto-Valuation</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+                <!-- Left column - Main form and item entry (2/3 width) -->
+                <div class="xl:col-span-2 space-y-6">
+                    <!-- Charity Information -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="text-lg font-semibold">🏢 Charity Information</h3>
+                        </div>
+                        <form id="items-donation-form" class="space-y-4">
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div class="relative">
+                                    <label class="block text-sm font-medium mb-2">Charity</label>
+                                    <input type="text" id="items-charity-search" class="input-field" placeholder="Type to search charities..." autocomplete="off" required>
+                                    <input type="hidden" id="items-charity-select" required>
+                                    <div id="items-charity-dropdown" class="absolute z-10 w-full bg-white border border-gray-300 rounded-lg shadow-lg mt-1 max-h-60 overflow-y-auto" style="display: none;"></div>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">Date</label>
+                                    <input type="date" id="items-donation-date" class="input-field" required>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Description (Optional)</label>
+                                <input type="text" id="items-description" class="input-field" placeholder="e.g., Household cleanout, seasonal clothing">
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Add Items Section -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="text-lg font-semibold">➕ Add Items</h3>
+                            <span class="text-sm text-gray-500">Add each item individually</span>
+                        </div>
+                        <div class="grid md:grid-cols-3 gap-4 mb-4">
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Item Category</label>
+                                <select id="items-item-category" class="input-field" onchange="updateItemsItemTypes()">
+                                    <option value="">Select category...</option>
+                                    <option value="appliances">Appliances</option>
+                                    <option value="mens-clothing">Men's Clothing</option>
+                                    <option value="womens-clothing">Women's Clothing</option>
+                                    <option value="childrens-clothing">Children's Clothing</option>
+                                    <option value="furniture">Furniture</option>
+                                    <option value="electronics">Electronics</option>
+                                    <option value="books-media">Books & Media</option>
+                                    <option value="household">Household Items</option>
+                                    <option value="kitchen">Kitchen Items</option>
+                                    <option value="sports">Sports & Recreation</option>
+                                    <option value="toys">Toys & Games</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Item Type</label>
+                                <select id="items-item-type" class="input-field" onchange="updateItemsItemValue()">
+                                    <option value="">Select item...</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Condition</label>
+                                <select id="items-item-condition" class="input-field" onchange="updateItemsItemValue()">
+                                    <option value="excellent">Excellent</option>
+                                    <option value="good" selected>Good</option>
+                                    <option value="fair">Fair</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="grid md:grid-cols-3 gap-4 mb-4">
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Quantity</label>
+                                <input type="number" id="items-item-quantity" class="input-field" value="1" min="1" onchange="updateItemsItemValue()">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Suggested Value (each)</label>
+                                <div class="p-3 bg-blue-50 border rounded-lg">
+                                    <span id="items-suggested-value" class="text-blue-800 font-medium">Select item for valuation</span>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Fair Market Value (each)</label>
+                                <input type="number" id="items-fair-market-value" step="0.01" class="input-field" placeholder="0.00" onchange="updateItemsItemValue()">
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium mb-2">Description (Optional)</label>
+                            <input type="text" id="items-item-description" class="input-field" placeholder="e.g., Brand, size, color">
+                        </div>
+                        <div class="text-center">
+                            <button type="button" onclick="addItemsItemToReceipt()" class="btn-primary">
+                                ➕ Add Item to Donation
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right column - Receipt (1/3 width) -->
+                <div class="xl:col-span-1">
+                    <div class="card sticky top-6">
+                        <div class="card-header">
+                            <h3 class="text-lg font-semibold">🧾 Donation Receipt</h3>
+                            <span class="text-sm text-gray-500">Items: <span id="items-receipt-count">0</span></span>
+                        </div>
+
+                        <div id="items-receipt-items" class="space-y-2 mb-4 min-h-32">
+                            <div class="text-center text-gray-500 py-8">
+                                <div class="text-3xl mb-2">📦</div>
+                                <p class="text-sm">No items added yet</p>
+                                <p class="text-xs">Add items using the form</p>
+                            </div>
+                        </div>
+
+                        <div class="border-t pt-4">
+                            <div class="flex justify-between items-center mb-4">
+                                <span class="font-semibold">Total Value:</span>
+                                <span id="items-receipt-total" class="font-bold text-green-600">$0.00</span>
+                            </div>
+                            <button type="button" onclick="saveItemsDonation()" class="btn-success w-full" disabled id="save-items-donation-btn">
+                                💾 Save Donation
+                            </button>
+                            <p class="text-xs text-gray-500 mt-2 text-center">Add at least one item to save</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <script>
@@ -1215,45 +1379,100 @@
             switch(type) {
                 case 'items':
                     container.innerHTML = `
-                        <div class="grid md:grid-cols-3 gap-4">
-                            <div>
-                                <label class="block text-sm font-medium mb-2">Item Category</label>
-                                <select id="item-category" class="w-full p-3 border rounded-lg" onchange="updateItemTypes()">
-                                    <option value="">Select category...</option>
-                                    <option value="Clothing">Clothing</option>
-                                    <option value="Household">Household Items</option>
-                                    <option value="Electronics">Electronics</option>
-                                    <option value="Books">Books & Media</option>
-                                    <option value="Furniture">Furniture</option>
-                                    <option value="Sports">Sports Equipment</option>
-                                    <option value="Toys">Toys & Games</option>
-                                </select>
+                        <div class="bg-blue-50 p-4 rounded-lg mb-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <h4 class="text-lg font-semibold text-blue-800">📦 Multi-Item Donation</h4>
+                                <span class="text-sm text-blue-600">Add multiple items to one donation</span>
                             </div>
-                            <div>
-                                <label class="block text-sm font-medium mb-2">Item Type</label>
-                                <select id="item-type" class="w-full p-3 border rounded-lg" onchange="updateItemValue()">
-                                    <option value="">Select item...</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium mb-2">Condition</label>
-                                <select id="item-condition" class="w-full p-3 border rounded-lg" onchange="updateItemValue()">
-                                    <option value="good">Good</option>
-                                    <option value="fair">Fair</option>
-                                    <option value="poor">Poor</option>
-                                </select>
-                            </div>
+                            <p class="text-sm text-blue-700">Perfect for donating multiple items to a thrift store or charity. Add each item individually, then save the entire donation.</p>
                         </div>
-                        <div class="grid md:grid-cols-2 gap-4 mt-4">
-                            <div>
-                                <label class="block text-sm font-medium mb-2">Suggested Value</label>
-                                <div class="p-3 bg-blue-50 border rounded-lg">
-                                    <span id="suggested-value" class="text-blue-800 font-medium">Select item for valuation</span>
+
+                        <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+                            <!-- Left column - Item form (2/3 width) -->
+                            <div class="xl:col-span-2">
+                                <div class="bg-gray-50 p-4 rounded-lg">
+                                    <h4 class="text-lg font-semibold mb-4">Add Item</h4>
+                                    <div class="grid md:grid-cols-3 gap-4 mb-4">
+                                        <div>
+                                            <label class="block text-sm font-medium mb-2">Item Category</label>
+                                            <select id="item-category" class="w-full p-3 border rounded-lg" onchange="updateItemTypes()">
+                                                <option value="">Select category...</option>
+                                                <option value="Clothing">Clothing</option>
+                                                <option value="Household">Household Items</option>
+                                                <option value="Electronics">Electronics</option>
+                                                <option value="Books">Books & Media</option>
+                                                <option value="Furniture">Furniture</option>
+                                                <option value="Sports">Sports Equipment</option>
+                                                <option value="Toys">Toys & Games</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium mb-2">Item Type</label>
+                                            <select id="item-type" class="w-full p-3 border rounded-lg" onchange="updateItemValue()">
+                                                <option value="">Select item...</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium mb-2">Condition</label>
+                                            <select id="item-condition" class="w-full p-3 border rounded-lg" onchange="updateItemValue()">
+                                                <option value="good">Good</option>
+                                                <option value="fair">Fair</option>
+                                                <option value="poor">Poor</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="grid md:grid-cols-3 gap-4 mb-4">
+                                        <div>
+                                            <label class="block text-sm font-medium mb-2">Quantity</label>
+                                            <input type="number" id="item-quantity" class="w-full p-3 border rounded-lg" value="1" min="1" onchange="updateItemValue()">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium mb-2">Suggested Value (each)</label>
+                                            <div class="p-3 bg-blue-50 border rounded-lg">
+                                                <span id="suggested-value" class="text-blue-800 font-medium">Select item for valuation</span>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium mb-2">Fair Market Value (each)</label>
+                                            <input type="number" id="fair-market-value" step="0.01" class="w-full p-3 border rounded-lg" placeholder="0.00" onchange="updateItemValue()">
+                                        </div>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label class="block text-sm font-medium mb-2">Description (Optional)</label>
+                                        <input type="text" id="item-description" class="w-full p-3 border rounded-lg" placeholder="e.g., Brand, size, specific details">
+                                    </div>
+                                    <div class="text-center">
+                                        <button type="button" onclick="addItemToReceipt()" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 font-semibold transform hover:-translate-y-0.5 transition-all duration-200">
+                                            ➕ Add Item to Donation
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-                            <div>
-                                <label class="block text-sm font-medium mb-2">Fair Market Value ($)</label>
-                                <input type="number" id="fair-market-value" step="0.01" class="w-full p-3 border rounded-lg" placeholder="0.00">
+
+                            <!-- Right column - Receipt (1/3 width) -->
+                            <div class="xl:col-span-1">
+                                <div class="bg-white border border-gray-200 rounded-lg p-4 sticky top-6">
+                                    <div class="flex items-center justify-between mb-4">
+                                        <h4 class="text-lg font-semibold">🧾 Donation Receipt</h4>
+                                        <span class="text-sm text-gray-500">Items: <span id="receipt-count">0</span></span>
+                                    </div>
+
+                                    <div id="receipt-items" class="space-y-2 mb-4 min-h-32">
+                                        <div class="text-center text-gray-500 py-8">
+                                            <div class="text-3xl mb-2">📦</div>
+                                            <p class="text-sm">No items added yet</p>
+                                            <p class="text-xs">Add items using the form</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="border-t pt-4">
+                                        <div class="flex justify-between items-center mb-2">
+                                            <span class="font-semibold">Total Value:</span>
+                                            <span id="receipt-total" class="font-bold text-green-600">$0.00</span>
+                                        </div>
+                                        <p class="text-xs text-gray-500">Final donation will be saved when you click "Create Donation" below</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     `;
@@ -2184,7 +2403,7 @@
         function hideAllPages() {
             const elements = [
                 'dashboard', 'add-donation-page', 'donation-form-page',
-                'auth-section', 'reports-page', 'profile-page', 'tools-page'
+                'auth-section', 'reports-page', 'profile-page', 'tools-page', 'items-donation-page'
             ];
 
             elements.forEach(id => {
@@ -4023,6 +4242,464 @@
             initializePage();
             loadCharities();
         }, 1000);
+
+        //*************************************************
+        // MULTI-ITEM DONATION FUNCTIONALITY
+        //*************************************************
+
+        // Global array to hold current donation items for items donations
+        let receiptItems = [];
+
+        // Add item to the receipt
+        function addItemToReceipt() {
+            const categorySelect = document.getElementById('item-category');
+            const typeSelect = document.getElementById('item-type');
+            const conditionSelect = document.getElementById('item-condition');
+            const quantityInput = document.getElementById('item-quantity');
+            const valueInput = document.getElementById('fair-market-value');
+            const descriptionInput = document.getElementById('item-description');
+
+            // Validation
+            if (!categorySelect.value) {
+                showMessage('Please select an item category', 'error');
+                return;
+            }
+            if (!typeSelect.value) {
+                showMessage('Please select an item type', 'error');
+                return;
+            }
+            if (!valueInput.value || parseFloat(valueInput.value) <= 0) {
+                showMessage('Please enter a valid fair market value', 'error');
+                return;
+            }
+
+            const quantity = parseInt(quantityInput.value) || 1;
+            const unitValue = parseFloat(valueInput.value) || 0;
+            const totalValue = quantity * unitValue;
+
+            // Create receipt item
+            const receiptItem = {
+                id: 'item-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9),
+                type: 'items',
+                category: categorySelect.value,
+                itemType: typeSelect.value,
+                condition: conditionSelect.value,
+                quantity: quantity,
+                unitValue: unitValue,
+                totalValue: totalValue,
+                description: descriptionInput.value || '',
+                categoryName: categorySelect.options[categorySelect.selectedIndex].text,
+                itemName: typeSelect.options[typeSelect.selectedIndex].text
+            };
+
+            // Add to receipt
+            receiptItems.push(receiptItem);
+            updateReceiptDisplay();
+            clearCurrentItem();
+
+            showMessage(`${receiptItem.itemName} added to donation`, 'success');
+        }
+
+        // Update receipt display
+        function updateReceiptDisplay() {
+            const container = document.getElementById('receipt-items');
+            const countElement = document.getElementById('receipt-count');
+            const totalElement = document.getElementById('receipt-total');
+
+            if (receiptItems.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center text-gray-500 py-8">
+                        <div class="text-3xl mb-2">📦</div>
+                        <p class="text-sm">No items added yet</p>
+                        <p class="text-xs">Add items using the form</p>
+                    </div>
+                `;
+                countElement.textContent = '0';
+                totalElement.textContent = '$0.00';
+            } else {
+                container.innerHTML = receiptItems.map(item => `
+                    <div class="border border-gray-200 rounded-lg p-3 bg-gray-50">
+                        <div class="flex justify-between items-start">
+                            <div class="flex-1">
+                                <div class="font-medium text-sm">${item.itemName}</div>
+                                <div class="text-xs text-gray-500">${item.categoryName} • ${item.condition} condition</div>
+                                <div class="text-xs text-gray-500">Qty: ${item.quantity} × $${item.unitValue.toFixed(2)}</div>
+                                ${item.description ? `<div class="text-xs text-gray-600 mt-1">${item.description}</div>` : ''}
+                            </div>
+                            <div class="text-right">
+                                <div class="font-semibold text-green-600">$${item.totalValue.toFixed(2)}</div>
+                                <button onclick="removeReceiptItem('${item.id}')" class="text-red-500 text-xs hover:text-red-700">Remove</button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+
+                const total = receiptItems.reduce((sum, item) => sum + item.totalValue, 0);
+                countElement.textContent = receiptItems.length;
+                totalElement.textContent = `$${total.toFixed(2)}`;
+            }
+        }
+
+        // Remove item from receipt
+        function removeReceiptItem(itemId) {
+            receiptItems = receiptItems.filter(item => item.id !== itemId);
+            updateReceiptDisplay();
+            showMessage('Item removed from donation', 'info');
+        }
+
+        // Clear current item form
+        function clearCurrentItem() {
+            document.getElementById('item-category').value = '';
+            document.getElementById('item-type').innerHTML = '<option value="">Select item...</option>';
+            document.getElementById('item-condition').value = 'good';
+            document.getElementById('item-quantity').value = '1';
+            document.getElementById('fair-market-value').value = '';
+            document.getElementById('item-description').value = '';
+            document.getElementById('suggested-value').textContent = 'Select item for valuation';
+        }
+
+        // Clear all receipt items (called when donation is saved or cancelled)
+        function clearReceiptItems() {
+            receiptItems = [];
+            updateReceiptDisplay();
+            clearCurrentItem();
+        }
+
+        //*************************************************
+        // NAVIGATION FUNCTIONS FOR DONATION TYPES
+        //*************************************************
+
+        // Show items donation page (dedicated multi-item page)
+        function showItemsDonationPage() {
+            if (!currentUser) {
+                showMessage('Please login or register to create donations', 'error');
+                showLogin();
+                return;
+            }
+            hideAllPages();
+            document.getElementById('items-donation-page').style.display = 'block';
+
+            // Initialize the items donation page
+            document.getElementById('items-donation-date').value = new Date().toISOString().split('T')[0];
+            clearReceiptItems();
+            setupItemsCharityAutocomplete();
+        }
+
+        // Select other donation types (uses existing single form)
+        function selectDonationType(type) {
+            document.getElementById('donation-type').value = type;
+            updateTypeSpecificFields();
+            // Show the existing single form but hide the items option (since items has its own page)
+            // Optionally scroll to the type-specific fields
+            document.getElementById('type-specific-fields').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        //*************************************************
+        // ITEMS DONATION PAGE FUNCTIONS
+        //*************************************************
+
+        // Items-specific charity autocomplete setup
+        function setupItemsCharityAutocomplete() {
+            // Similar to main charity autocomplete but for items page
+            // This ensures the items page has its own charity search functionality
+            const searchInput = document.getElementById('items-charity-search');
+            const dropdown = document.getElementById('items-charity-dropdown');
+            const hiddenSelect = document.getElementById('items-charity-select');
+
+            if (!searchInput || !dropdown || !hiddenSelect) return;
+
+            searchInput.addEventListener('input', function() {
+                const query = this.value.toLowerCase();
+                if (query.length < 2) {
+                    dropdown.style.display = 'none';
+                    return;
+                }
+
+                // Filter charities based on query
+                const filtered = charities.filter(charity =>
+                    charity.name.toLowerCase().includes(query) ||
+                    (charity.address && charity.address.toLowerCase().includes(query))
+                );
+
+                if (filtered.length === 0) {
+                    dropdown.style.display = 'none';
+                    return;
+                }
+
+                dropdown.innerHTML = filtered.map(charity => `
+                    <div class="p-3 hover:bg-gray-100 cursor-pointer border-b last:border-b-0"
+                         onclick="selectItemsCharity('${charity.id}', '${charity.name}', '${charity.address || ''}', '${charity.ein || ''}')">
+                        <div class="font-medium">${charity.name}</div>
+                        ${charity.address ? `<div class="text-sm text-gray-600">${charity.address}</div>` : ''}
+                    </div>
+                `).join('');
+
+                dropdown.style.display = 'block';
+            });
+
+            // Hide dropdown when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!searchInput.contains(e.target) && !dropdown.contains(e.target)) {
+                    dropdown.style.display = 'none';
+                }
+            });
+        }
+
+        // Select charity for items donation
+        function selectItemsCharity(id, name, address, ein) {
+            document.getElementById('items-charity-search').value = name;
+            document.getElementById('items-charity-select').value = id;
+            document.getElementById('items-charity-select').setAttribute('data-charity-name', name);
+            document.getElementById('items-charity-select').setAttribute('data-charity-address', address);
+            document.getElementById('items-charity-select').setAttribute('data-charity-ein', ein);
+            document.getElementById('items-charity-dropdown').style.display = 'none';
+        }
+
+        // Items page specific functions (similar to existing but with 'items-' prefix)
+        function updateItemsItemTypes() {
+            const categorySelect = document.getElementById('items-item-category');
+            const typeSelect = document.getElementById('items-item-type');
+
+            if (!categorySelect || !typeSelect) return;
+
+            const category = categorySelect.value;
+            typeSelect.innerHTML = '<option value="">Select item...</option>';
+
+            if (category && itemCategories[category]) {
+                itemCategories[category].items.forEach(item => {
+                    const option = document.createElement('option');
+                    option.value = item.id;
+                    option.textContent = item.name;
+                    option.setAttribute('data-fair', item.values ? item.values.fair || 0 : 0);
+                    option.setAttribute('data-good', item.values ? item.values.good || 0 : 0);
+                    option.setAttribute('data-excellent', item.values ? item.values.excellent || 0 : 0);
+                    typeSelect.appendChild(option);
+                });
+            }
+
+            updateItemsItemValue();
+        }
+
+        function updateItemsItemValue() {
+            const typeSelect = document.getElementById('items-item-type');
+            const conditionSelect = document.getElementById('items-item-condition');
+            const quantityInput = document.getElementById('items-item-quantity');
+            const valueInput = document.getElementById('items-fair-market-value');
+            const suggestedSpan = document.getElementById('items-suggested-value');
+
+            if (!typeSelect || !conditionSelect || !valueInput || !suggestedSpan) return;
+
+            const selectedOption = typeSelect.options[typeSelect.selectedIndex];
+            const condition = conditionSelect.value;
+            const quantity = parseInt(quantityInput?.value) || 1;
+
+            if (selectedOption && selectedOption.value) {
+                const suggestedValue = parseFloat(selectedOption.getAttribute(`data-${condition}`)) || 0;
+                suggestedSpan.textContent = suggestedValue > 0 ? `$${suggestedValue.toFixed(2)}` : 'No suggested value';
+
+                // Auto-fill if no custom value entered
+                if (!valueInput.value || parseFloat(valueInput.value) === 0) {
+                    valueInput.value = suggestedValue.toFixed(2);
+                }
+            } else {
+                suggestedSpan.textContent = 'Select item for valuation';
+            }
+        }
+
+        // Add item to receipt (items page version)
+        function addItemsItemToReceipt() {
+            const categorySelect = document.getElementById('items-item-category');
+            const typeSelect = document.getElementById('items-item-type');
+            const conditionSelect = document.getElementById('items-item-condition');
+            const quantityInput = document.getElementById('items-item-quantity');
+            const valueInput = document.getElementById('items-fair-market-value');
+            const descriptionInput = document.getElementById('items-item-description');
+
+            // Validation
+            if (!categorySelect.value) {
+                showMessage('Please select an item category', 'error');
+                return;
+            }
+            if (!typeSelect.value) {
+                showMessage('Please select an item type', 'error');
+                return;
+            }
+            if (!valueInput.value || parseFloat(valueInput.value) <= 0) {
+                showMessage('Please enter a valid fair market value', 'error');
+                return;
+            }
+
+            const quantity = parseInt(quantityInput.value) || 1;
+            const unitValue = parseFloat(valueInput.value) || 0;
+            const totalValue = quantity * unitValue;
+
+            // Create receipt item
+            const receiptItem = {
+                id: 'item-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9),
+                type: 'items',
+                category: categorySelect.value,
+                itemType: typeSelect.value,
+                condition: conditionSelect.value,
+                quantity: quantity,
+                unitValue: unitValue,
+                totalValue: totalValue,
+                description: descriptionInput.value || '',
+                categoryName: categorySelect.options[categorySelect.selectedIndex].text,
+                itemName: typeSelect.options[typeSelect.selectedIndex].text
+            };
+
+            // Add to receipt
+            receiptItems.push(receiptItem);
+            updateItemsReceiptDisplay();
+            clearItemsCurrentItem();
+
+            showMessage(`${receiptItem.itemName} added to donation`, 'success');
+        }
+
+        // Update receipt display (items page version)
+        function updateItemsReceiptDisplay() {
+            const container = document.getElementById('items-receipt-items');
+            const countElement = document.getElementById('items-receipt-count');
+            const totalElement = document.getElementById('items-receipt-total');
+            const saveButton = document.getElementById('save-items-donation-btn');
+
+            if (receiptItems.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center text-gray-500 py-8">
+                        <div class="text-3xl mb-2">📦</div>
+                        <p class="text-sm">No items added yet</p>
+                        <p class="text-xs">Add items using the form</p>
+                    </div>
+                `;
+                countElement.textContent = '0';
+                totalElement.textContent = '$0.00';
+                saveButton.disabled = true;
+                saveButton.classList.add('opacity-50');
+            } else {
+                container.innerHTML = receiptItems.map(item => `
+                    <div class="border border-gray-200 rounded-lg p-3 bg-gray-50">
+                        <div class="flex justify-between items-start">
+                            <div class="flex-1">
+                                <div class="font-medium text-sm">${item.itemName}</div>
+                                <div class="text-xs text-gray-500">${item.categoryName} • ${item.condition} condition</div>
+                                <div class="text-xs text-gray-500">Qty: ${item.quantity} × $${item.unitValue.toFixed(2)}</div>
+                                ${item.description ? `<div class="text-xs text-gray-600 mt-1">${item.description}</div>` : ''}
+                            </div>
+                            <div class="text-right">
+                                <div class="font-semibold text-green-600">$${item.totalValue.toFixed(2)}</div>
+                                <button onclick="removeItemsReceiptItem('${item.id}')" class="text-red-500 text-xs hover:text-red-700">Remove</button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+
+                const total = receiptItems.reduce((sum, item) => sum + item.totalValue, 0);
+                countElement.textContent = receiptItems.length;
+                totalElement.textContent = `$${total.toFixed(2)}`;
+                saveButton.disabled = false;
+                saveButton.classList.remove('opacity-50');
+            }
+        }
+
+        // Remove item from receipt (items page version)
+        function removeItemsReceiptItem(itemId) {
+            receiptItems = receiptItems.filter(item => item.id !== itemId);
+            updateItemsReceiptDisplay();
+            showMessage('Item removed from donation', 'info');
+        }
+
+        // Clear current item form (items page version)
+        function clearItemsCurrentItem() {
+            document.getElementById('items-item-category').value = '';
+            document.getElementById('items-item-type').innerHTML = '<option value="">Select item...</option>';
+            document.getElementById('items-item-condition').value = 'good';
+            document.getElementById('items-item-quantity').value = '1';
+            document.getElementById('items-fair-market-value').value = '';
+            document.getElementById('items-item-description').value = '';
+            document.getElementById('items-suggested-value').textContent = 'Select item for valuation';
+        }
+
+        // Save items donation (final save)
+        async function saveItemsDonation() {
+            if (receiptItems.length === 0) {
+                showMessage('Please add at least one item to the donation', 'error');
+                return;
+            }
+
+            const charitySelect = document.getElementById('items-charity-select');
+            const dateInput = document.getElementById('items-donation-date');
+            const descriptionInput = document.getElementById('items-description');
+
+            if (!charitySelect.value) {
+                showMessage('Please select a charity', 'error');
+                return;
+            }
+
+            if (!dateInput.value) {
+                showMessage('Please select a donation date', 'error');
+                return;
+            }
+
+            const saveButton = document.getElementById('save-items-donation-btn');
+            const originalText = saveButton.textContent;
+            saveButton.textContent = '💾 Saving...';
+            saveButton.disabled = true;
+
+            try {
+                // Calculate total donation value
+                const totalValue = receiptItems.reduce((sum, item) => sum + item.totalValue, 0);
+
+                // Create the main donation record
+                const donationData = {
+                    charity_id: charitySelect.value,
+                    charity_name: charitySelect.getAttribute('data-charity-name') || '',
+                    charity_address: charitySelect.getAttribute('data-charity-address') || '',
+                    charity_ein: charitySelect.getAttribute('data-charity-ein') || '',
+                    type: 'items',
+                    date: dateInput.value,
+                    tax_deductible_amount: totalValue,
+                    description: descriptionInput.value || `Items donation: ${receiptItems.length} items`,
+                    // Add items metadata
+                    items: receiptItems,
+                    item_count: receiptItems.length
+                };
+
+                const response = await fetch(`${API_BASE}/api/donations`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': authToken ? `Bearer ${authToken}` : ''
+                    },
+                    body: JSON.stringify(donationData)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showMessage(`Multi-item donation saved successfully! ${receiptItems.length} items totaling $${totalValue.toFixed(2)}`, 'success');
+
+                    // Reset the form
+                    document.getElementById('items-donation-form').reset();
+                    document.getElementById('items-donation-date').value = new Date().toISOString().split('T')[0];
+                    clearReceiptItems();
+
+                    // Refresh dashboard
+                    loadUserDonations();
+                    loadDashboardStats();
+
+                    // Go back to dashboard
+                    showDashboard();
+                } else {
+                    showMessage(result.message || 'Failed to save donation', 'error');
+                }
+
+            } catch (error) {
+                showMessage('Error saving donation: ' + error.message, 'error');
+            }
+
+            saveButton.textContent = originalText;
+            saveButton.disabled = receiptItems.length === 0;
+        }
     </script>
 </body>
 </html>

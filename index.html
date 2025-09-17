@@ -1542,6 +1542,9 @@
                 document.getElementById('profile-name').value = currentUser.name;
                 document.getElementById('profile-email').value = currentUser.email;
 
+                // Update subscription display
+                updateSubscriptionDisplay();
+
                 // Show user dashboard, hide landing page
                 document.getElementById('landing-page').style.display = 'none';
                 document.getElementById('user-dashboard').style.display = 'block';
@@ -2135,6 +2138,31 @@
                         </div>
 
                         <div style="background: rgba(255,255,255,0.15); padding: 30px; border-radius: 12px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2);">
+                            <h3 style="font-size: 1.5rem; margin: 0 0 20px 0;">Subscription Status</h3>
+                            <div style="margin-bottom: 15px;">
+                                <label style="display: block; margin-bottom: 5px; font-weight: 500;">Current Plan</label>
+                                <div id="subscription-tier" style="width: 100%; padding: 12px; border: none; border-radius: 8px; background: rgba(255,255,255,0.9); color: #333; font-weight: bold;">Free Tier</div>
+                            </div>
+                            <div style="margin-bottom: 15px;">
+                                <label style="display: block; margin-bottom: 5px; font-weight: 500;">Status</label>
+                                <div id="subscription-status" style="width: 100%; padding: 12px; border: none; border-radius: 8px; background: rgba(255,255,255,0.9); color: #333;">Active</div>
+                            </div>
+                            <div style="margin-bottom: 15px;">
+                                <label style="display: block; margin-bottom: 5px; font-weight: 500;">Last Payment Date</label>
+                                <div id="payment-date" style="width: 100%; padding: 12px; border: none; border-radius: 8px; background: rgba(255,255,255,0.9); color: #333;">--</div>
+                            </div>
+                            <div style="margin-bottom: 15px;">
+                                <label style="display: block; margin-bottom: 5px; font-weight: 500;">Subscription Expires</label>
+                                <div id="subscription-end-date" style="width: 100%; padding: 12px; border: none; border-radius: 8px; background: rgba(255,255,255,0.9); color: #333;">--</div>
+                            </div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                <button onclick="showUpgradeOptions()" style="background: #4CAF50; color: white; padding: 12px 16px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Upgrade Plan</button>
+                                <button onclick="showBillingHistory()" style="background: #2196F3; color: white; padding: 12px 16px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Billing History</button>
+                            </div>
+                            <p style="font-size: 0.85rem; color: rgba(255,255,255,0.7); margin: 10px 0 0 0; text-align: center;">💎 Premium: $9.99/mo | 🚀 Crypto Pro: $19.99/mo</p>
+                        </div>
+
+                        <div style="background: rgba(255,255,255,0.15); padding: 30px; border-radius: 12px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2);">
                             <h3 style="font-size: 1.5rem; margin: 0 0 20px 0;">Tax Settings</h3>
                             <div style="margin-bottom: 15px;">
                                 <label style="display: block; margin-bottom: 5px; font-weight: 500;">Filing Status</label>
@@ -2293,6 +2321,49 @@
                 console.error('Password change error:', error);
                 showMessage('Error changing password: ' + error.message, 'error');
             }
+        }
+
+        function updateSubscriptionDisplay() {
+            // Default values for demo - in real app would load from user data
+            const tierMap = {
+                'free': '🆓 Free Tier',
+                'premium': '💎 Premium',
+                'crypto_pro': '🚀 Crypto Pro'
+            };
+
+            const statusMap = {
+                'active': '✅ Active',
+                'trial': '🎯 Trial',
+                'expired': '❌ Expired',
+                'cancelled': '⏸️ Cancelled'
+            };
+
+            // Demo data - would come from currentUser object
+            const tier = currentUser?.subscription_tier || 'free';
+            const status = currentUser?.subscription_status || 'active';
+            const paymentDate = currentUser?.payment_date || null;
+            const endDate = currentUser?.subscription_end_date || null;
+
+            document.getElementById('subscription-tier').textContent = tierMap[tier] || tier;
+            document.getElementById('subscription-status').textContent = statusMap[status] || status;
+            document.getElementById('payment-date').textContent = paymentDate ? new Date(paymentDate).toLocaleDateString() : '--';
+            document.getElementById('subscription-end-date').textContent = endDate ? new Date(endDate).toLocaleDateString() : '--';
+
+            // Update button text based on tier
+            const upgradeBtn = document.querySelector('button[onclick="showUpgradeOptions()"]');
+            if (tier === 'free') {
+                upgradeBtn.textContent = 'Upgrade Plan';
+            } else {
+                upgradeBtn.textContent = 'Change Plan';
+            }
+        }
+
+        function showUpgradeOptions() {
+            showMessage('💎 Upgrade options coming soon! Contact support for early access.', 'info');
+        }
+
+        function showBillingHistory() {
+            showMessage('📊 Billing history feature coming soon!', 'info');
         }
 
         async function saveTaxSettings() {

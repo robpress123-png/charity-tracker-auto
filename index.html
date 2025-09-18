@@ -126,6 +126,10 @@
                         <span class="mr-2">🔧</span>
                         Tools
                     </button>
+                    <button id="admin-nav-btn" onclick="showAdminDashboard()" class="flex items-center px-4 py-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" style="display: none;">
+                        <span class="mr-2">⚙️</span>
+                        Admin
+                    </button>
                 </div>
                 <div class="flex items-center space-x-4 text-sm text-gray-500">
                     <span id="nav-user-name">User</span>
@@ -1094,6 +1098,271 @@
             </div>
         </div>
 
+        <!-- Admin Dashboard Page -->
+        <div id="admin-dashboard-page" class="space-y-6" style="display: none;">
+            <!-- Admin Header -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h2 class="section-title">🔧 Administrator Dashboard</h2>
+                            <p class="text-sm text-gray-600">System administration and management</p>
+                        </div>
+                        <button onclick="showDashboard()" class="btn-secondary">
+                            ← Back to User Dashboard
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin Navigation -->
+            <div class="card">
+                <div class="border-b border-gray-200">
+                    <div class="flex space-x-8 px-6">
+                        <button onclick="showAdminSection('system-stats')" class="admin-nav-link border-blue-500 text-blue-600 py-4 px-1 border-b-2 font-medium text-sm">
+                            📊 System Stats
+                        </button>
+                        <button onclick="showAdminSection('charity-mgmt')" class="admin-nav-link border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 py-4 px-1 border-b-2 font-medium text-sm">
+                            ❤️ Charities
+                        </button>
+                        <button onclick="showAdminSection('user-mgmt')" class="admin-nav-link border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 py-4 px-1 border-b-2 font-medium text-sm">
+                            👥 Users
+                        </button>
+                        <button onclick="showAdminSection('admin-tools')" class="admin-nav-link border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 py-4 px-1 border-b-2 font-medium text-sm">
+                            🛠️ Admin Tools
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Stats Section -->
+            <div id="admin-system-stats" class="admin-section">
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+                    <!-- Total Users -->
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0">
+                                    <span class="text-2xl">👥</span>
+                                </div>
+                                <div class="ml-4">
+                                    <p class="text-sm font-medium text-gray-500">Total Users</p>
+                                    <p id="stat-total-users" class="text-2xl font-bold text-gray-900">--</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Total Donations -->
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0">
+                                    <span class="text-2xl">🎁</span>
+                                </div>
+                                <div class="ml-4">
+                                    <p class="text-sm font-medium text-gray-500">Total Donations</p>
+                                    <p id="stat-total-donations" class="text-2xl font-bold text-gray-900">--</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Total Value -->
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0">
+                                    <span class="text-2xl">💰</span>
+                                </div>
+                                <div class="ml-4">
+                                    <p class="text-sm font-medium text-gray-500">Total Value</p>
+                                    <p id="stat-total-value" class="text-2xl font-bold text-green-600">--</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Total Charities -->
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0">
+                                    <span class="text-2xl">🏢</span>
+                                </div>
+                                <div class="ml-4">
+                                    <p class="text-sm font-medium text-gray-500">Total Charities</p>
+                                    <p id="stat-total-charities" class="text-2xl font-bold text-gray-900">--</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="text-lg font-medium text-gray-900">Recent User Activity</h3>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Donations</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Value</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Activity</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-user-activity-table" class="bg-white divide-y divide-gray-200">
+                                <tr>
+                                    <td colspan="4" class="px-6 py-4 text-center text-gray-500">Loading user activity...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charity Management Section -->
+            <div id="admin-charity-mgmt" class="admin-section hidden">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-lg font-medium text-gray-900">Charity Database Management</h3>
+                            <button onclick="showAddCharityForm()" class="btn-primary">
+                                ➕ Add New Charity
+                            </button>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">EIN</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-charity-table" class="bg-white divide-y divide-gray-200">
+                                <tr>
+                                    <td colspan="4" class="px-6 py-4 text-center text-gray-500">Loading charities...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- User Management Section -->
+            <div id="admin-user-mgmt" class="admin-section hidden">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="text-lg font-medium text-gray-900">User Account Management</h3>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">License</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Donations</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-user-table" class="bg-white divide-y divide-gray-200">
+                                <tr>
+                                    <td colspan="5" class="px-6 py-4 text-center text-gray-500">Loading users...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin Tools Section -->
+            <div id="admin-admin-tools" class="admin-section hidden">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="text-lg font-medium text-gray-900">Administrative Tools</h3>
+                        <p class="text-sm text-gray-600">Advanced system administration and management tools</p>
+                    </div>
+
+                    <!-- Tools Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
+                        <!-- Database Management -->
+                        <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-lg border border-blue-200">
+                            <div class="flex items-center mb-4">
+                                <div class="flex justify-center items-center w-10 h-10 bg-blue-600 rounded-lg mr-3">
+                                    <span class="text-white text-lg">🗄️</span>
+                                </div>
+                                <h4 class="text-lg font-medium text-gray-900">Database Management</h4>
+                            </div>
+                            <div class="space-y-2">
+                                <button onclick="exportAllData()" class="w-full text-left p-2 text-sm bg-white rounded border hover:bg-gray-50">
+                                    📤 Export All Data
+                                </button>
+                                <button onclick="showSystemLogs()" class="w-full text-left p-2 text-sm bg-white rounded border hover:bg-gray-50">
+                                    📋 System Logs
+                                </button>
+                                <button onclick="showDatabaseStats()" class="w-full text-left p-2 text-sm bg-white rounded border hover:bg-gray-50">
+                                    📊 Database Statistics
+                                </button>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-2">Database administration tools</p>
+                        </div>
+
+                        <!-- User Management Tools -->
+                        <div class="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-lg border border-green-200">
+                            <div class="flex items-center mb-4">
+                                <div class="flex justify-center items-center w-10 h-10 bg-green-600 rounded-lg mr-3">
+                                    <span class="text-white text-lg">👥</span>
+                                </div>
+                                <h4 class="text-lg font-medium text-gray-900">User Management</h4>
+                            </div>
+                            <div class="space-y-2">
+                                <button onclick="showUserManagement()" class="w-full text-left p-2 text-sm bg-white rounded border hover:bg-gray-50">
+                                    👤 Manage Users
+                                </button>
+                                <button onclick="showPendingCharities()" class="w-full text-left p-2 text-sm bg-white rounded border hover:bg-gray-50">
+                                    ⏳ Pending Charities
+                                </button>
+                                <button onclick="showUserActivity()" class="w-full text-left p-2 text-sm bg-white rounded border hover:bg-gray-50">
+                                    📊 User Activity
+                                </button>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-2">User account administration</p>
+                        </div>
+
+                        <!-- System Configuration -->
+                        <div class="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-lg border border-purple-200">
+                            <div class="flex items-center mb-4">
+                                <div class="flex justify-center items-center w-10 h-10 bg-purple-600 rounded-lg mr-3">
+                                    <span class="text-white text-lg">⚙️</span>
+                                </div>
+                                <h4 class="text-lg font-medium text-gray-900">System Config</h4>
+                            </div>
+                            <div class="space-y-2">
+                                <button onclick="showGlobalSettings()" class="w-full text-left p-2 text-sm bg-white rounded border hover:bg-gray-50">
+                                    ⚙️ Global Settings
+                                </button>
+                                <button onclick="showTaxRateConfig()" class="w-full text-left p-2 text-sm bg-white rounded border hover:bg-gray-50">
+                                    💰 Tax Rate Updates
+                                </button>
+                                <button onclick="showSecuritySettings()" class="w-full text-left p-2 text-sm bg-white rounded border hover:bg-gray-50">
+                                    🔐 Security Settings
+                                </button>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-2">System-wide configuration</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <script>
@@ -1927,6 +2196,12 @@
                 if (navUserName) navUserName.textContent = userName;
                 if (mainNav) mainNav.style.display = 'block';
 
+                // Show/hide admin navigation button based on user role
+                const adminNavBtn = document.getElementById('admin-nav-btn');
+                if (adminNavBtn) {
+                    adminNavBtn.style.display = currentUser.is_admin ? 'flex' : 'none';
+                }
+
                 // Update profile page with safety checks
                 const profileName = document.getElementById('profile-name');
                 const profileEmail = document.getElementById('profile-email');
@@ -2458,7 +2733,8 @@
         function hideAllPages() {
             const elements = [
                 'dashboard', 'add-donation-page', 'donation-form-page',
-                'auth-section', 'reports-page', 'profile-page', 'tools-page', 'items-donation-page'
+                'auth-section', 'reports-page', 'profile-page', 'tools-page', 'items-donation-page',
+                'admin-dashboard-page', 'donation-type-selection-page'
             ];
 
             elements.forEach(id => {
@@ -4810,6 +5086,286 @@
 
             saveButton.textContent = originalText;
             saveButton.disabled = receiptItems.length === 0;
+        }
+
+        //*************************************************
+        // ADMIN DASHBOARD FUNCTIONS
+        //*************************************************
+
+        function showAdminDashboard() {
+            if (!currentUser || !currentUser.is_admin) {
+                showMessage('Access denied. Admin privileges required.', 'error');
+                return;
+            }
+            hideAllPages();
+            document.getElementById('admin-dashboard-page').style.display = 'block';
+            showAdminSection('system-stats');
+            loadAdminStats();
+        }
+
+        function showAdminSection(section) {
+            // Hide all admin sections
+            const adminSections = document.querySelectorAll('.admin-section');
+            adminSections.forEach(s => s.classList.add('hidden'));
+
+            // Update nav button states
+            const navLinks = document.querySelectorAll('.admin-nav-link');
+            navLinks.forEach(link => {
+                link.classList.remove('border-blue-500', 'text-blue-600');
+                link.classList.add('border-transparent', 'text-gray-500');
+            });
+
+            // Show selected section
+            const targetSection = document.getElementById(`admin-${section}`);
+            if (targetSection) {
+                targetSection.classList.remove('hidden');
+            }
+
+            // Update active nav button
+            const activeLink = event?.target || document.querySelector(`[onclick*="${section}"]`);
+            if (activeLink) {
+                activeLink.classList.remove('border-transparent', 'text-gray-500');
+                activeLink.classList.add('border-blue-500', 'text-blue-600');
+            }
+
+            // Load section-specific data
+            switch (section) {
+                case 'system-stats':
+                    loadAdminStats();
+                    loadUserActivity();
+                    break;
+                case 'charity-mgmt':
+                    loadCharityManagement();
+                    break;
+                case 'user-mgmt':
+                    loadUserManagement();
+                    break;
+                case 'admin-tools':
+                    // Tools section is static
+                    break;
+            }
+        }
+
+        async function loadAdminStats() {
+            if (!currentUser || !authToken) return;
+
+            try {
+                // Load system statistics
+                const [usersRes, donationsRes, charitiesRes] = await Promise.all([
+                    fetch(`${API_BASE}/api/admin/stats/users`, { headers: { Authorization: `Bearer ${authToken}` } }),
+                    fetch(`${API_BASE}/api/admin/stats/donations`, { headers: { Authorization: `Bearer ${authToken}` } }),
+                    fetch(`${API_BASE}/api/charities`, { headers: { Authorization: `Bearer ${authToken}` } })
+                ]);
+
+                if (usersRes.ok) {
+                    const usersData = await usersRes.json();
+                    document.getElementById('stat-total-users').textContent = usersData.data?.count || '--';
+                }
+
+                if (donationsRes.ok) {
+                    const donationsData = await donationsRes.json();
+                    document.getElementById('stat-total-donations').textContent = donationsData.data?.count || '--';
+                    const totalValue = donationsData.data?.totalValue || 0;
+                    document.getElementById('stat-total-value').textContent = `$${totalValue.toLocaleString()}`;
+                }
+
+                if (charitiesRes.ok) {
+                    const charitiesData = await charitiesRes.json();
+                    document.getElementById('stat-total-charities').textContent = charitiesData.data?.charities?.length || '--';
+                }
+
+            } catch (error) {
+                console.error('Error loading admin stats:', error);
+                showMessage('Error loading system statistics', 'error');
+            }
+        }
+
+        async function loadUserActivity() {
+            if (!currentUser || !authToken) return;
+
+            try {
+                const response = await fetch(`${API_BASE}/api/admin/user-activity`, {
+                    headers: { Authorization: `Bearer ${authToken}` }
+                });
+
+                const tableBody = document.getElementById('admin-user-activity-table');
+
+                if (response.ok) {
+                    const data = await response.json();
+                    const users = data.data?.users || [];
+
+                    if (users.length === 0) {
+                        tableBody.innerHTML = '<tr><td colspan="4" class="px-6 py-4 text-center text-gray-500">No user activity found</td></tr>';
+                        return;
+                    }
+
+                    tableBody.innerHTML = users.map(user => `
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm font-medium text-gray-900">${user.name || 'Unknown'}</div>
+                                <div class="text-sm text-gray-500">${user.email}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${user.donationCount || 0}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">$${(user.totalValue || 0).toLocaleString()}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${user.lastActivity ? new Date(user.lastActivity).toLocaleDateString() : 'Never'}</td>
+                        </tr>
+                    `).join('');
+                } else {
+                    tableBody.innerHTML = '<tr><td colspan="4" class="px-6 py-4 text-center text-gray-500">Failed to load user activity</td></tr>';
+                }
+            } catch (error) {
+                console.error('Error loading user activity:', error);
+                document.getElementById('admin-user-activity-table').innerHTML = '<tr><td colspan="4" class="px-6 py-4 text-center text-gray-500">Error loading user activity</td></tr>';
+            }
+        }
+
+        async function loadCharityManagement() {
+            if (!currentUser || !authToken) return;
+
+            try {
+                const response = await fetch(`${API_BASE}/api/charities`, {
+                    headers: { Authorization: `Bearer ${authToken}` }
+                });
+
+                const tableBody = document.getElementById('admin-charity-table');
+
+                if (response.ok) {
+                    const data = await response.json();
+                    const charities = data.data?.charities || [];
+
+                    if (charities.length === 0) {
+                        tableBody.innerHTML = '<tr><td colspan="4" class="px-6 py-4 text-center text-gray-500">No charities found</td></tr>';
+                        return;
+                    }
+
+                    tableBody.innerHTML = charities.map(charity => `
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm font-medium text-gray-900">${charity.name}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${charity.ein || 'N/A'}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${charity.address || 'N/A'}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                <button onclick="editCharity('${charity.id}')" class="text-blue-600 hover:text-blue-900 mr-2">Edit</button>
+                                <button onclick="deleteCharity('${charity.id}')" class="text-red-600 hover:text-red-900">Delete</button>
+                            </td>
+                        </tr>
+                    `).join('');
+                } else {
+                    tableBody.innerHTML = '<tr><td colspan="4" class="px-6 py-4 text-center text-gray-500">Failed to load charities</td></tr>';
+                }
+            } catch (error) {
+                console.error('Error loading charities:', error);
+                tableBody.innerHTML = '<tr><td colspan="4" class="px-6 py-4 text-center text-gray-500">Error loading charities</td></tr>';
+            }
+        }
+
+        async function loadUserManagement() {
+            if (!currentUser || !authToken) return;
+
+            try {
+                const response = await fetch(`${API_BASE}/api/admin/users`, {
+                    headers: { Authorization: `Bearer ${authToken}` }
+                });
+
+                const tableBody = document.getElementById('admin-user-table');
+
+                if (response.ok) {
+                    const data = await response.json();
+                    const users = data.data?.users || [];
+
+                    if (users.length === 0) {
+                        tableBody.innerHTML = '<tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">No users found</td></tr>';
+                        return;
+                    }
+
+                    tableBody.innerHTML = users.map(user => `
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm font-medium text-gray-900">${user.name || 'Unknown'}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${user.email}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${user.is_admin ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}">
+                                    ${user.is_admin ? 'Admin' : 'Standard'}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${user.donationCount || 0}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                <button onclick="editUser('${user.id}')" class="text-blue-600 hover:text-blue-900 mr-2">Edit</button>
+                                <button onclick="resetUserPassword('${user.id}')" class="text-yellow-600 hover:text-yellow-900 mr-2">Reset Password</button>
+                                <button onclick="deleteUser('${user.id}')" class="text-red-600 hover:text-red-900">Delete</button>
+                            </td>
+                        </tr>
+                    `).join('');
+                } else {
+                    tableBody.innerHTML = '<tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">Failed to load users</td></tr>';
+                }
+            } catch (error) {
+                console.error('Error loading users:', error);
+                tableBody.innerHTML = '<tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">Error loading users</td></tr>';
+            }
+        }
+
+        // Admin tool functions (placeholder implementations)
+        function exportAllData() {
+            showMessage('Export functionality coming soon!', 'info');
+        }
+
+        function showSystemLogs() {
+            showMessage('System logs feature coming soon!', 'info');
+        }
+
+        function showDatabaseStats() {
+            showMessage('Database statistics feature coming soon!', 'info');
+        }
+
+        function showUserManagement() {
+            showAdminSection('user-mgmt');
+        }
+
+        function showPendingCharities() {
+            showMessage('Pending charities review feature coming soon!', 'info');
+        }
+
+        function showUserActivity() {
+            showAdminSection('system-stats');
+        }
+
+        function showGlobalSettings() {
+            showMessage('Global settings feature coming soon!', 'info');
+        }
+
+        function showTaxRateConfig() {
+            showMessage('Tax rate configuration feature coming soon!', 'info');
+        }
+
+        function showSecuritySettings() {
+            showMessage('Security settings feature coming soon!', 'info');
+        }
+
+        function showAddCharityForm() {
+            showMessage('Add charity form coming soon!', 'info');
+        }
+
+        function editCharity(charityId) {
+            showMessage(`Edit charity ${charityId} - feature coming soon!`, 'info');
+        }
+
+        function deleteCharity(charityId) {
+            showMessage(`Delete charity ${charityId} - feature coming soon!`, 'info');
+        }
+
+        function editUser(userId) {
+            showMessage(`Edit user ${userId} - feature coming soon!`, 'info');
+        }
+
+        function resetUserPassword(userId) {
+            showMessage(`Reset password for user ${userId} - feature coming soon!`, 'info');
+        }
+
+        function deleteUser(userId) {
+            showMessage(`Delete user ${userId} - feature coming soon!`, 'info');
         }
     </script>
 </body>

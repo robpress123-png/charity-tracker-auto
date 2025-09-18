@@ -179,10 +179,6 @@
                         <input type="checkbox" id="remember-me" class="mr-2 rounded">
                         <span class="text-sm text-gray-600">Remember me (keep me logged in for 7 days)</span>
                     </label>
-                    <label class="flex items-center">
-                        <input type="checkbox" id="admin-login" class="mr-2 rounded">
-                        <span class="text-sm text-gray-600">Login as Administrator</span>
-                    </label>
                 </div>
                 <button onclick="handleLogin()" class="btn-primary" type="button">🔐 Login</button>
                 </form>
@@ -911,51 +907,6 @@
         </div>
 
         <!-- Admin Panel (hidden by default) -->
-        <div id="admin-section" class="card" style="display: none;">
-            <div class="card-header">
-                <h2 class="section-title">⚙️ Administrator Panel</h2>
-                <button onclick="hideAdminPanel()" class="btn-secondary">← Back to Dashboard</button>
-            </div>
-
-            <!-- Admin Tabs -->
-            <div class="flex mb-6 border-b border-gray-200">
-                <button id="admin-charities-tab" onclick="showAdminCharities()" class="px-4 py-2 bg-red-600 text-white rounded-t-lg">Charity Approvals</button>
-                <button id="admin-users-tab" onclick="showAdminUsers()" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-t-lg ml-1">User Management</button>
-            </div>
-
-            <!-- Charity Approvals -->
-            <div id="admin-charities-panel">
-                <h3 class="text-lg font-semibold mb-4">Pending Charity Approvals</h3>
-
-                <div id="pending-charities-list" class="space-y-4">
-                    <div class="text-center text-gray-500 py-8">
-                        <div class="text-4xl mb-2">📋</div>
-                        <p>Loading pending charities...</p>
-                    </div>
-                </div>
-
-                <div class="mt-6 p-4 bg-blue-50 rounded-lg">
-                    <h4 class="font-semibold text-blue-800 mb-2">Bulk Actions</h4>
-                    <div class="flex space-x-2">
-                        <button onclick="approveAllVisible()" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
-                            ✅ Approve All Visible
-                        </button>
-                        <button onclick="refreshPendingCharities()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-                            🔄 Refresh List
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- User Management -->
-            <div id="admin-users-panel" style="display: none;">
-                <h3 class="text-lg font-semibold mb-4">User Management</h3>
-                <div class="text-center text-gray-500 py-8">
-                    <div class="text-4xl mb-2">👥</div>
-                    <p>User management features coming soon...</p>
-                </div>
-            </div>
-        </div>
 
         <!-- Items Donation Page -->
         <div id="items-donation-page" class="space-y-6" style="display: none;">
@@ -4348,37 +4299,16 @@
         }
 
         // Admin Panel Functions
-        let isAdminMode = false;
         let pendingCharities = [];
 
         function showAdminPanel() {
-            hideAllSections();
-            document.getElementById('admin-section').style.display = 'block';
-            loadPendingCharities();
+            // Redirect to new admin dashboard
+            showAdminDashboard();
         }
 
-        function hideAdminPanel() {
-            document.getElementById('admin-section').style.display = 'none';
-            showDashboard();
-        }
-
-        function showAdminCharities() {
-            document.getElementById('admin-charities-tab').className = 'px-4 py-2 bg-red-600 text-white rounded-t-lg';
-            document.getElementById('admin-users-tab').className = 'px-4 py-2 bg-gray-300 text-gray-700 rounded-t-lg ml-1';
-            document.getElementById('admin-charities-panel').style.display = 'block';
-            document.getElementById('admin-users-panel').style.display = 'none';
-            loadPendingCharities();
-        }
-
-        function showAdminUsers() {
-            document.getElementById('admin-charities-tab').className = 'px-4 py-2 bg-gray-300 text-gray-700 rounded-t-lg';
-            document.getElementById('admin-users-tab').className = 'px-4 py-2 bg-red-600 text-white rounded-t-lg ml-1';
-            document.getElementById('admin-charities-panel').style.display = 'none';
-            document.getElementById('admin-users-panel').style.display = 'block';
-        }
 
         async function loadPendingCharities() {
-            if (!isAdminMode || !authToken) {
+            if (!currentUser || !currentUser.is_admin || !authToken) {
                 document.getElementById('pending-charities-list').innerHTML = `
                     <div class="text-center text-red-500 py-8">
                         <div class="text-4xl mb-2">🚫</div>
@@ -4548,24 +4478,10 @@
         // Modify handleLogin to check for admin mode
         const originalHandleLogin = window.handleLogin;
         window.handleLogin = async function() {
-            // Check if admin checkbox is selected
-            isAdminMode = document.getElementById('admin-login').checked;
-
             // Call original login function
             await originalHandleLogin();
 
-            // If admin mode and login successful, show admin message
-            if (isAdminMode && currentUser) {
-                setTimeout(() => {
-                    showMessage('🔐 Administrator mode activated', 'success');
-                    // Could show admin panel immediately or add admin button
-                    setTimeout(() => {
-                        if (confirm('Open Administrator Panel?')) {
-                            showAdminPanel();
-                        }
-                    }, 1000);
-                }, 500);
-            }
+            // Admin functionality is now handled automatically in showUserInfo
         };
 
         // Auto-start the system

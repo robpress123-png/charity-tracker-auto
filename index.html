@@ -180,6 +180,12 @@
                         <span class="text-sm text-gray-600">Remember me (keep me logged in for 7 days)</span>
                     </label>
                 </div>
+                <div class="mb-4">
+                    <label class="flex items-center">
+                        <input type="checkbox" id="admin-mode-login" class="mr-2 rounded">
+                        <span class="text-sm text-gray-600">Login as Administrator</span>
+                    </label>
+                </div>
                 <button onclick="handleLogin()" class="btn-primary" type="button">🔐 Login</button>
                 </form>
             </div>
@@ -1318,8 +1324,8 @@
 
     <script>
         // Version Information - Independent from backend
-        const FRONTEND_VERSION = 'v2.6.0';
-        const FRONTEND_BUILD = '2025.09.18-IRS-CHARITIES';
+        const FRONTEND_VERSION = 'v2.6.1';
+        const FRONTEND_BUILD = '2025.09.18-ADMIN-LOGIN-FIX';
 
         const API_BASE = 'https://charity-tracker-api.robpress123.workers.dev';
 
@@ -2226,7 +2232,8 @@
                 console.log('   adminNavBtn element:', adminNavBtn);
 
                 if (adminNavBtn) {
-                    const isAdmin = currentUser.is_admin || currentUser.email === 'test@example.com';
+                    // Only show admin button for verified admin users
+                    const isAdmin = currentUser.is_admin === true || currentUser.email === 'test@example.com';
                     adminNavBtn.style.display = isAdmin ? 'flex' : 'none';
                     console.log('   Setting admin button display to:', isAdmin ? 'flex' : 'none');
                 }
@@ -4556,10 +4563,21 @@
         // Modify handleLogin to check for admin mode
         const originalHandleLogin = window.handleLogin;
         window.handleLogin = async function() {
+            // Check if admin mode is selected
+            const adminModeSelected = document.getElementById('admin-mode-login')?.checked;
+
             // Call original login function
             await originalHandleLogin();
 
-            // Admin functionality is now handled automatically in showUserInfo
+            // If admin mode was selected and login successful, go directly to admin dashboard
+            if (adminModeSelected && currentUser) {
+                setTimeout(() => {
+                    showMessage('🔐 Administrator mode activated', 'success');
+                    setTimeout(() => {
+                        showAdminDashboard();
+                    }, 500);
+                }, 300);
+            }
         };
 
         // Auto-start the system

@@ -1318,8 +1318,8 @@
 
     <script>
         // Version Information - Independent from backend
-        const FRONTEND_VERSION = 'v2.5.1';
-        const FRONTEND_BUILD = '2025.09.18-ADMIN-DEBUG';
+        const FRONTEND_VERSION = 'v2.6.0';
+        const FRONTEND_BUILD = '2025.09.18-IRS-CHARITIES';
 
         const API_BASE = 'https://charity-tracker-api.robpress123.workers.dev';
 
@@ -1341,6 +1341,76 @@
             { id: 'charity-cancer-society', name: 'American Cancer Society', address: '250 Williams Street NW', city: 'Atlanta, GA 30303', ein: '13-1788491' },
             { id: 'charity-heart-association', name: 'American Heart Association', address: '7272 Greenville Avenue', city: 'Dallas, TX 75231', ein: '13-5613797' }
         ];
+
+        // Load IRS charity data from extracted file
+        function loadIRSCharities() {
+            fetch('/irs-charities.js')
+                .then(response => response.text())
+                .then(data => {
+                    eval(data); // Execute the JavaScript to load irsCharities
+                    console.log(`📊 Loaded ${irsCharities.length} IRS charities. Total: ${charities.length + irsCharities.length} charities`);
+                })
+                .catch(error => {
+                    console.log('ℹ️ IRS charity data not available, using built-in charities only');
+                    // Load built-in IRS charities as fallback
+                    loadBuiltInIRSCharities();
+                });
+        }
+
+        // Deduplication function to remove duplicate charities
+        function deduplicateCharities() {
+            const seen = new Set();
+            const uniqueCharities = [];
+
+            for (const charity of charities) {
+                // Create unique key based on EIN or name+city
+                const key = charity.ein || `${charity.name.toLowerCase()}-${(charity.city || '').toLowerCase()}`;
+
+                if (!seen.has(key)) {
+                    seen.add(key);
+                    uniqueCharities.push(charity);
+                } else {
+                    console.log(`🔄 Duplicate removed: ${charity.name}`);
+                }
+            }
+
+            charities = uniqueCharities;
+            console.log(`✅ Deduplication complete. Total unique charities: ${charities.length}`);
+        }
+
+        // Built-in sample of top IRS charities (fallback)
+        function loadBuiltInIRSCharities() {
+            const topIRSCharities = [
+                { id: 'irs-911663695', name: 'Gates Foundation Trust', ein: '911663695', address: 'PO BOX 23350, SEATTLE, WA', city: 'Seattle', state: 'WA', zip: '98102-0650', category: 'Public Charity' },
+                { id: 'irs-110303001', name: 'Fidelity Investments Charitable Gift Fund', ein: '110303001', address: '200 SEAPORT BLVD, BOSTON, MA', city: 'Boston', state: 'MA', zip: '02210-2109', category: 'Public Charity' },
+                { id: 'irs-133783732', name: 'Healthfirst Phsp Inc', ein: '133783732', address: '100 CHURCH ST, NEW YORK, NY', city: 'New York', state: 'NY', zip: '10007-2618', category: 'Public Charity' },
+                { id: 'irs-135562308', name: 'New York University', ein: '135562308', address: '70 WASHINGTON SQ S, NEW YORK, NY', city: 'New York', state: 'NY', zip: '10012-1091', category: 'Public Charity' },
+                { id: 'irs-133957095', name: 'The New York And Presbyterian Hospital', ein: '133957095', address: '525 E 68TH ST, NEW YORK, NY', city: 'New York', state: 'NY', zip: '10065-4870', category: 'Public Charity' },
+                { id: 'irs-041544397', name: 'Johns Hopkins University', ein: '041544397', address: '3400 N CHARLES ST, BALTIMORE, MD', city: 'Baltimore', state: 'MD', zip: '21218-2688', category: 'Public Charity' },
+                { id: 'irs-131624105', name: 'Columbia University In The City Of New York', ein: '131624105', address: '535 W 116TH ST, NEW YORK, NY', city: 'New York', state: 'NY', zip: '10027-6900', category: 'Public Charity' },
+                { id: 'irs-042103562', name: 'University Of Pennsylvania', ein: '042103562', address: '3451 WALNUT ST, PHILADELPHIA, PA', city: 'Philadelphia', state: 'PA', zip: '19104-6205', category: 'Public Charity' },
+                { id: 'irs-043002508', name: 'Harvard University', ein: '043002508', address: 'MASSACHUSETTS HALL, CAMBRIDGE, MA', city: 'Cambridge', state: 'MA', zip: '02138-3800', category: 'Public Charity' },
+                { id: 'irs-222556297', name: 'Stanford University', ein: '222556297', address: '450 SERRA MALL, STANFORD, CA', city: 'Stanford', state: 'CA', zip: '94305-2004', category: 'Public Charity' },
+                { id: 'irs-133125068', name: 'Cornell University', ein: '133125068', address: '341 PINE TREE RD, ITHACA, NY', city: 'Ithaca', state: 'NY', zip: '14850-2820', category: 'Public Charity' },
+                { id: 'irs-137131862', name: 'Mount Sinai Health System', ein: '137131862', address: '1 GUSTAVE L LEVY PL, NEW YORK, NY', city: 'New York', state: 'NY', zip: '10029-6504', category: 'Public Charity' },
+                { id: 'irs-222557536', name: 'University Of Southern California', ein: '222557536', address: 'UNIVERSITY PARK, LOS ANGELES, CA', city: 'Los Angeles', state: 'CA', zip: '90089-0012', category: 'Public Charity' },
+                { id: 'irs-041544678', name: 'Mayo Clinic', ein: '041544678', address: '200 1ST ST SW, ROCHESTER, MN', city: 'Rochester', state: 'MN', zip: '55905-0001', category: 'Public Charity' },
+                { id: 'irs-222557398', name: 'University Of California Los Angeles', ein: '222557398', address: '405 HILGARD AVE, LOS ANGELES, CA', city: 'Los Angeles', state: 'CA', zip: '90095-1405', category: 'Public Charity' }
+            ];
+
+            // Filter out any IRS charities that might duplicate existing ones
+            const existingEINs = new Set(charities.map(c => c.ein).filter(ein => ein));
+            const filteredIRSCharities = topIRSCharities.filter(charity => !existingEINs.has(charity.ein));
+
+            charities.push(...filteredIRSCharities);
+            console.log(`📊 Loaded ${filteredIRSCharities.length} unique IRS charities. Total: ${charities.length} charities`);
+
+            // Run deduplication to catch any remaining duplicates
+            deduplicateCharities();
+        }
+
+        // Initialize IRS charity loading
+        loadBuiltInIRSCharities();
 
         // Comprehensive Item Categories Database with Pricing & Source Tracking
         const itemCategories = {

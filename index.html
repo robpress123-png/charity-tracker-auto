@@ -412,11 +412,88 @@
         </div>
 
 
+        <!-- Donation Type Selection Page -->
+        <div id="donation-type-selection-page" class="space-y-6" style="display: none;">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="section-title">Choose Donation Type</h2>
+                    <span class="text-sm text-gray-600">Select the type of donation you'd like to record</span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+                <!-- Items Donation Card -->
+                <div onclick="showItemsDonationPage()" class="donation-type-card group relative bg-white p-8 border-2 border-gray-200 rounded-2xl shadow-lg hover:shadow-2xl cursor-pointer transition-all duration-300 transform hover:-translate-y-2">
+                    <div class="text-center">
+                        <div class="flex justify-center items-center w-16 h-16 mx-auto mb-6 bg-gradient-to-r from-blue-400 to-blue-600 group-hover:from-blue-500 group-hover:to-blue-700 rounded-2xl shadow-lg">
+                            <span class="text-3xl text-white">📦</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">Items</h3>
+                        <p class="text-sm text-gray-600 mb-4">Clothing, household goods, electronics</p>
+                        <div class="bg-blue-50 text-blue-700 text-xs px-3 py-1 rounded-full font-medium">Multi-Item Support</div>
+                    </div>
+                </div>
+
+                <!-- Money Donation Card -->
+                <div onclick="showMoneyDonationPage()" class="donation-type-card group relative bg-white p-8 border-2 border-gray-200 rounded-2xl shadow-lg hover:shadow-2xl cursor-pointer transition-all duration-300 transform hover:-translate-y-2">
+                    <div class="text-center">
+                        <div class="flex justify-center items-center w-16 h-16 mx-auto mb-6 bg-gradient-to-r from-green-400 to-green-600 group-hover:from-green-500 group-hover:to-green-700 rounded-2xl shadow-lg">
+                            <span class="text-3xl text-white">💵</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">Money</h3>
+                        <p class="text-sm text-gray-600 mb-4">Cash donations, checks</p>
+                        <div class="bg-green-50 text-green-700 text-xs px-3 py-1 rounded-full font-medium">Tax Deductible</div>
+                    </div>
+                </div>
+
+                <!-- Mileage Donation Card -->
+                <div onclick="showMileageDonationPage()" class="donation-type-card group relative bg-white p-8 border-2 border-gray-200 rounded-2xl shadow-lg hover:shadow-2xl cursor-pointer transition-all duration-300 transform hover:-translate-y-2">
+                    <div class="text-center">
+                        <div class="flex justify-center items-center w-16 h-16 mx-auto mb-6 bg-gradient-to-r from-orange-400 to-orange-600 group-hover:from-orange-500 group-hover:to-orange-700 rounded-2xl shadow-lg">
+                            <span class="text-3xl text-white">🚗</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">Mileage</h3>
+                        <p class="text-sm text-gray-600 mb-4">Volunteer driving</p>
+                        <div class="bg-orange-50 text-orange-700 text-xs px-3 py-1 rounded-full font-medium">14¢/mile</div>
+                    </div>
+                </div>
+
+                <!-- Stock Donation Card -->
+                <div onclick="showStockDonationPage()" class="donation-type-card group relative bg-white p-8 border-2 border-gray-200 rounded-2xl shadow-lg hover:shadow-2xl cursor-pointer transition-all duration-300 transform hover:-translate-y-2">
+                    <div class="text-center">
+                        <div class="flex justify-center items-center w-16 h-16 mx-auto mb-6 bg-gradient-to-r from-purple-400 to-purple-600 group-hover:from-purple-500 group-hover:to-purple-700 rounded-2xl shadow-lg">
+                            <span class="text-3xl text-white">📈</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">Stock</h3>
+                        <p class="text-sm text-gray-600 mb-4">Securities, shares</p>
+                        <div class="bg-purple-50 text-purple-700 text-xs px-3 py-1 rounded-full font-medium">Tax Advantage</div>
+                    </div>
+                </div>
+
+                <!-- Crypto Donation Card -->
+                <div onclick="showCryptoDonationPage()" class="donation-type-card group relative bg-white p-8 border-2 border-gray-200 rounded-2xl shadow-lg hover:shadow-2xl cursor-pointer transition-all duration-300 transform hover:-translate-y-2">
+                    <div class="text-center">
+                        <div class="flex justify-center items-center w-16 h-16 mx-auto mb-6 bg-gradient-to-r from-yellow-400 to-yellow-600 group-hover:from-yellow-500 group-hover:to-yellow-700 rounded-2xl shadow-lg">
+                            <span class="text-3xl text-white">₿</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">Crypto</h3>
+                        <p class="text-sm text-gray-600 mb-4">Digital assets</p>
+                        <div class="bg-yellow-50 text-yellow-700 text-xs px-3 py-1 rounded-full font-medium">Capital Gains</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Donation Form -->
         <div id="donation-form-page" class="space-y-6" style="display: none;">
             <div class="card">
                 <div class="card-header">
-                    <h2 class="section-title" id="donation-form-title">Add New Donation</h2>
+                    <div class="flex items-center">
+                        <button onclick="showDonationTypeSelection()" class="text-blue-600 hover:text-blue-800 mr-4">
+                            ← Back to Donation Types
+                        </button>
+                        <h2 class="section-title" id="donation-form-title">Add New Donation</h2>
+                    </div>
                 </div>
             </div>
 
@@ -479,33 +556,9 @@
                         </div>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium mb-2">Choose Donation Type</label>
-                        <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
-                            <button type="button" onclick="showItemsDonationPage()" class="donation-type-card p-4 border border-gray-300 rounded-lg text-center hover:border-blue-500 hover:bg-blue-50 transition-all duration-200">
-                                <div class="text-2xl mb-2">📦</div>
-                                <div class="text-sm font-medium">Items</div>
-                                <div class="text-xs text-gray-500">Multi-item support</div>
-                            </button>
-                            <button type="button" onclick="selectDonationType('money')" class="donation-type-card p-4 border border-gray-300 rounded-lg text-center hover:border-green-500 hover:bg-green-50 transition-all duration-200">
-                                <div class="text-2xl mb-2">💵</div>
-                                <div class="text-sm font-medium">Money</div>
-                                <div class="text-xs text-gray-500">Cash/Check</div>
-                            </button>
-                            <button type="button" onclick="selectDonationType('mileage')" class="donation-type-card p-4 border border-gray-300 rounded-lg text-center hover:border-orange-500 hover:bg-orange-50 transition-all duration-200">
-                                <div class="text-2xl mb-2">🚗</div>
-                                <div class="text-sm font-medium">Mileage</div>
-                                <div class="text-xs text-gray-500">14¢/mile</div>
-                            </button>
-                            <button type="button" onclick="selectDonationType('stock')" class="donation-type-card p-4 border border-gray-300 rounded-lg text-center hover:border-purple-500 hover:bg-purple-50 transition-all duration-200">
-                                <div class="text-2xl mb-2">📈</div>
-                                <div class="text-sm font-medium">Stock</div>
-                                <div class="text-xs text-gray-500">Securities</div>
-                            </button>
-                            <button type="button" onclick="selectDonationType('crypto')" class="donation-type-card p-4 border border-gray-300 rounded-lg text-center hover:border-yellow-500 hover:bg-yellow-50 transition-all duration-200">
-                                <div class="text-2xl mb-2">₿</div>
-                                <div class="text-sm font-medium">Crypto</div>
-                                <div class="text-xs text-gray-500">Digital assets</div>
-                            </button>
+                        <label class="block text-sm font-medium mb-2">Donation Type</label>
+                        <div class="p-3 bg-gray-50 border rounded-lg">
+                            <span id="selected-donation-type" class="text-gray-600">No type selected</span>
                         </div>
                         <input type="hidden" id="donation-type" required>
                     </div>
@@ -905,7 +958,7 @@
             <div class="card">
                 <div class="card-header">
                     <div class="flex items-center">
-                        <button onclick="showAddDonation()" class="text-blue-600 hover:text-blue-800 mr-4">
+                        <button onclick="showDonationTypeSelection()" class="text-blue-600 hover:text-blue-800 mr-4">
                             ← Back to Donation Types
                         </button>
                         <h2 class="section-title">📦 Items Donation</h2>
@@ -990,14 +1043,12 @@
                                 <input type="number" id="items-item-quantity" class="input-field" value="1" min="1" onchange="updateItemsItemValue()">
                             </div>
                             <div>
-                                <label class="block text-sm font-medium mb-2">Suggested Value (each)</label>
-                                <div class="p-3 bg-blue-50 border rounded-lg">
-                                    <span id="items-suggested-value" class="text-blue-800 font-medium">Select item for valuation</span>
-                                </div>
-                            </div>
-                            <div>
                                 <label class="block text-sm font-medium mb-2">Fair Market Value (each)</label>
-                                <input type="number" id="items-fair-market-value" step="0.01" class="input-field" placeholder="0.00" onchange="updateItemsItemValue()">
+                                <div class="flex items-center space-x-2">
+                                    <span class="text-gray-600 text-sm">$</span>
+                                    <input type="number" id="items-fair-market-value" step="0.01" class="input-field" placeholder="0.00" onchange="updateItemsItemValue()" readonly>
+                                    <span class="text-sm text-gray-500">auto-calculated</span>
+                                </div>
                             </div>
                         </div>
                         <div class="mb-4">
@@ -2145,15 +2196,19 @@
             }
         }
 
-        function showAddDonation() {
+        function showDonationTypeSelection() {
             if (!currentUser) {
                 showMessage('Please login or register to create donations', 'error');
                 showLogin();
                 return;
             }
             hideAllPages();
-            document.getElementById('donation-form-page').style.display = 'block';
-            loadUserDonations();
+            document.getElementById('donation-type-selection-page').style.display = 'block';
+        }
+
+        function showAddDonation() {
+            // Redirect to donation type selection page
+            showDonationTypeSelection();
         }
 
         function showReports() {
@@ -4385,6 +4440,66 @@
             setupItemsCharityAutocomplete();
         }
 
+        function showMoneyDonationPage() {
+            if (!currentUser) {
+                showMessage('Please login or register to create donations', 'error');
+                showLogin();
+                return;
+            }
+            hideAllPages();
+            document.getElementById('donation-form-page').style.display = 'block';
+            document.getElementById('donation-form-title').textContent = 'Money Donation';
+            document.getElementById('selected-donation-type').textContent = 'Money donation selected';
+            document.getElementById('donation-type').value = 'money';
+            updateTypeSpecificFields();
+            loadUserDonations();
+        }
+
+        function showMileageDonationPage() {
+            if (!currentUser) {
+                showMessage('Please login or register to create donations', 'error');
+                showLogin();
+                return;
+            }
+            hideAllPages();
+            document.getElementById('donation-form-page').style.display = 'block';
+            document.getElementById('donation-form-title').textContent = 'Mileage Donation';
+            document.getElementById('selected-donation-type').textContent = 'Mileage donation selected';
+            document.getElementById('donation-type').value = 'mileage';
+            updateTypeSpecificFields();
+            loadUserDonations();
+        }
+
+        function showStockDonationPage() {
+            if (!currentUser) {
+                showMessage('Please login or register to create donations', 'error');
+                showLogin();
+                return;
+            }
+            hideAllPages();
+            document.getElementById('donation-form-page').style.display = 'block';
+            document.getElementById('donation-form-title').textContent = 'Stock Donation';
+            document.getElementById('selected-donation-type').textContent = 'Stock donation selected';
+            document.getElementById('donation-type').value = 'stock';
+            updateTypeSpecificFields();
+            loadUserDonations();
+        }
+
+        function showCryptoDonationPage() {
+            if (!currentUser) {
+                showMessage('Please login or register to create donations', 'error');
+                showLogin();
+                return;
+            }
+            hideAllPages();
+            document.getElementById('donation-form-page').style.display = 'block';
+            document.getElementById('donation-form-title').textContent = 'Crypto Donation';
+            document.getElementById('selected-donation-type').textContent = 'Crypto donation selected';
+            document.getElementById('donation-type').value = 'crypto';
+            updateTypeSpecificFields();
+            loadUserDonations();
+        }
+
         // Select other donation types (uses existing single form)
         function selectDonationType(type) {
             document.getElementById('donation-type').value = type;
@@ -4485,24 +4600,20 @@
             const conditionSelect = document.getElementById('items-item-condition');
             const quantityInput = document.getElementById('items-item-quantity');
             const valueInput = document.getElementById('items-fair-market-value');
-            const suggestedSpan = document.getElementById('items-suggested-value');
 
-            if (!typeSelect || !conditionSelect || !valueInput || !suggestedSpan) return;
+            if (!typeSelect || !conditionSelect || !valueInput) return;
 
             const selectedOption = typeSelect.options[typeSelect.selectedIndex];
             const condition = conditionSelect.value;
             const quantity = parseInt(quantityInput?.value) || 1;
 
             if (selectedOption && selectedOption.value) {
-                const suggestedValue = parseFloat(selectedOption.getAttribute(`data-${condition}`)) || 0;
-                suggestedSpan.textContent = suggestedValue > 0 ? `$${suggestedValue.toFixed(2)}` : 'No suggested value';
+                const fairMarketValue = parseFloat(selectedOption.getAttribute(`data-${condition}`)) || 0;
 
-                // Auto-fill if no custom value entered
-                if (!valueInput.value || parseFloat(valueInput.value) === 0) {
-                    valueInput.value = suggestedValue.toFixed(2);
-                }
+                // Automatically set the fair market value based on system data
+                valueInput.value = fairMarketValue.toFixed(2);
             } else {
-                suggestedSpan.textContent = 'Select item for valuation';
+                valueInput.value = '';
             }
         }
 

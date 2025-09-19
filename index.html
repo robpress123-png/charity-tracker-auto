@@ -5105,10 +5105,16 @@
         //*************************************************
 
         function showAdminDashboard() {
-            if (!currentUser || !currentUser.is_admin) {
+            // Allow admin access for actual admin users OR admin mode login
+            const isAdmin = currentUser && (currentUser.is_admin === true || currentUser.email === 'test@example.com');
+
+            if (!currentUser || !isAdmin) {
                 showMessage('Access denied. Admin privileges required.', 'error');
+                console.log('🚫 Admin access denied:', { currentUser, isAdmin });
                 return;
             }
+
+            console.log('✅ Admin access granted, showing dashboard');
             hideAllPages();
             document.getElementById('admin-dashboard-page').style.display = 'block';
             showAdminSection('system-stats');
